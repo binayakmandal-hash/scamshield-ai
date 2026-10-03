@@ -74,6 +74,7 @@ def main():
     db.init_db(Config.DATABASE_PATH)
     if args.reset_dataset:
         db.clear_examples(Config.DATABASE_PATH, "dataset")
+        db.clear_models(Config.DATABASE_PATH)
         print("Removed imported dataset examples.")
     if args.csv:
         rows, skipped, cols = load_rows(args.csv, args.text, args.label)
@@ -89,6 +90,7 @@ def main():
         return
 
     print("Training...")
+    db.clear_models(Config.DATABASE_PATH)  # every user's model retrains with the new data
     stats = Learner(Config.DATABASE_PATH).retrain()
     m = stats.get("metrics") or {}
     print(f"Trained on {stats['total_examples']} examples, vocabulary {stats['vocabulary']} words.")

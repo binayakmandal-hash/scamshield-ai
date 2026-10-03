@@ -46,6 +46,18 @@ class Config:
     GMAIL_TOKEN_FILE = os.getenv("GMAIL_TOKEN_FILE", os.path.join(BASE_DIR, "gmail_token.json"))
     GMAIL_SCAN_LIMIT = int(os.getenv("GMAIL_SCAN_LIMIT", "25"))
 
+    # --- Deployment ----------------------------------------------------------
+    # PUBLIC_MODE=true on a public website (e.g. Render): every visitor gets a
+    # private session with their own Gmail sign-in, history and learning.
+    PUBLIC_MODE = _bool("PUBLIC_MODE", False)
+    TOKENS_DIR = os.getenv("TOKENS_DIR", os.path.join(BASE_DIR, "instance", "tokens"))
+    SESSION_COOKIE_SECURE = PUBLIC_MODE
+    SESSION_COOKIE_HTTPONLY = True
+    SESSION_COOKIE_SAMESITE = "Lax"
+    PERMANENT_SESSION_LIFETIME = 60 * 60 * 24 * 7  # one week
+    # Per-visitor limit on AI calls in PUBLIC_MODE, so a public site can't exhaust your API quota.
+    AI_REQUESTS_PER_HOUR = int(os.getenv("AI_REQUESTS_PER_HOUR", "60"))
+
     # --- Storage & privacy --------------------------------------------------
     DATABASE_PATH = os.getenv("DATABASE_PATH", os.path.join(BASE_DIR, "database.db"))
     # Turn history off entirely with SAVE_HISTORY=false

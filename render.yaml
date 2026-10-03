@@ -1,0 +1,34 @@
+# Render Blueprint: https://render.com/docs/blueprint-spec
+# Deploy: Render dashboard -> New -> Blueprint -> pick this repo.
+services:
+  - type: web
+    name: scamshield-ai
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    # One worker keeps per-visitor in-memory state consistent; threads handle concurrency.
+    startCommand: gunicorn app:app --workers 1 --threads 8 --timeout 180 --bind 0.0.0.0:$PORT
+    healthCheckPath: /api/health
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.7
+      - key: PUBLIC_MODE            # each visitor gets a private session
+        value: "true"
+      - key: SECRET_KEY
+        generateValue: true
+      - key: AI_PROVIDER
+        value: openai
+      - key: OPENAI_BASE_URL
+        value: https://generativelanguage.googleapis.com/v1beta/openai
+      - key: OPENAI_MODEL
+        value: gemma-4-26b-a4b-it
+      - key: OPENAI_API_KEY         # your Google AI Studio key
+        sync: false
+      - key: GOOGLE_CLIENT_ID       # Gmail OAuth client
+        sync: false
+      - key: GOOGLE_CLIENT_SECRET
+        sync: false
+      - key: GMAIL_REDIRECT_URI     # https://<your-app>.onrender.com/oauth2callback
+        sync: false
+      - key: AI_REQUESTS_PER_HOUR   # per visitor, protects your API quota
+        value: "60"

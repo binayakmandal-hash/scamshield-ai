@@ -33,4 +33,6 @@ Turn saving off completely with `SAVE_HISTORY=false`.
 
 ## Deploying publicly
 
-ScamShield is designed to run on your own computer. Before hosting it for other people, add user accounts with per-user tokens, HTTPS, rate limiting and CSRF protection, set a strong `SECRET_KEY`, and complete Google's OAuth verification.
+With `PUBLIC_MODE=true` (the default in `render.yaml`), each visitor gets a private session: their Gmail token, history, feedback, sender rules and demo inbox are stored under a random session id that only their browser holds. AI calls are rate-limited per visitor. See [DEPLOY_RENDER.md](DEPLOY_RENDER.md).
+
+For a real public launch beyond a demo, add user accounts with per-user tokens, HTTPS, rate limiting and CSRF protection, set a strong `SECRET_KEY`, and complete Google's OAuth verification.

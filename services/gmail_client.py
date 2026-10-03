@@ -141,9 +141,9 @@ def parse_message(msg: dict) -> dict:
 # Client
 # --------------------------------------------------------------------------- #
 class GmailClient:
-    def __init__(self, config):
+    def __init__(self, config, token_file: str = None):
         self.redirect_uri = config.GMAIL_REDIRECT_URI
-        self.token_file = config.GMAIL_TOKEN_FILE
+        self.token_file = token_file or config.GMAIL_TOKEN_FILE
         self.client_id = config.GOOGLE_CLIENT_ID
         self.client_secret = config.GOOGLE_CLIENT_SECRET
         path = config.GOOGLE_CLIENT_SECRETS_FILE
@@ -181,6 +181,7 @@ class GmailClient:
         self._save_token(resp.json())
 
     def _save_token(self, data: dict, old: dict = None) -> dict:
+        os.makedirs(os.path.dirname(os.path.abspath(self.token_file)), exist_ok=True)
         token = dict(old or {})
         token["access_token"] = data["access_token"]
         token["expires_at"] = time.time() + int(data.get("expires_in", 3600))

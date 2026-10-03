@@ -3,6 +3,7 @@
 Run:  python app.py      then open http://127.0.0.1:5000
 """
 import io
+import time
 import logging
 
 from flask import Flask, abort, jsonify, render_template, request
@@ -11,6 +12,7 @@ from PIL import Image, UnidentifiedImageError
 import database as db
 from config import Config
 import mail_routes
+from users import current_uid
 from services.ai_analyzer import AIUnavailable, ScamAnalyzer, build_client
 
 logging.basicConfig(level=logging.INFO, format="%(levelname)s %(name)s: %(message)s")
@@ -33,11 +35,37 @@ def _error(message: str, status: int = 400):
     return jsonify({"ok": False, "error": message}), status
 
 
+# --------------------------------------------------------------------------- #
+# Public deployments: per-visitor limit on requests that call the AI model
+# --------------------------------------------------------------------------- #
+_AI_ENDPOINTS = ("/api/analyze", "/api/chat", "/api/eli12", "/api/action-plan", "/api/family-note")
+_ai_calls = {}
+
+
+@app.before_request
+def limit_ai_usage():
+    if not Config.PUBLIC_MODE:
+        return None
+    path = request.path
+    is_ai = path in _AI_ENDPOINTS or (request.method == "GET" and path.startswith("/api/mail/") and path.count("/") == 4)
+    if not is_ai:
+        return None
+    now = time.time()
+    calls = [t for t in _ai_calls.get(current_uid(), []) if now - t < 3600]
+    if len(calls) >= Config.AI_REQUESTS_PER_HOUR:
+        return _error("You've reached the hourly limit for AI analyses on this demo site. Try again later, "
+                      "or run ScamShield on your own computer for unlimited use.", 429)
+    calls.append(now)
+    _ai_calls[current_uid()] = calls
+    return None
+
+
 @app.context_processor
 def inject_globals():
     ready, reason = analyzer.llm.is_ready() if analyzer.llm.enabled else (False, "AI is turned off (AI_PROVIDER=none)")
     return {"ai_enabled": ready, "ai_model": analyzer.llm.label, "ai_reason": reason,
-            "gmail_configured": mail.gmail.configured, "gmail_connected": mail.gmail.connected}
+            "gmail_configured": mail.gmail().configured, "gmail_connected": mail.gmail().connected,
+            "public_mode": Config.PUBLIC_MODE}
 
 
 # --------------------------------------------------------------------------- #
@@ -50,7 +78,7 @@ def index():
 
 @app.get("/analysis/<analysis_id>")
 def analysis_page(analysis_id):
-    record = db.get_analysis(Config.DATABASE_PATH, analysis_id)
+    record = db.get_analysis(Config.DATABASE_PATH, analysis_id, current_uid())
     if not record:
         abort(404)
     return render_template("analysis.html", page="analysis", record=record)
@@ -130,7 +158,7 @@ def api_analyze():
 
     analysis_id = None
     if Config.SAVE_HISTORY:
-        analysis_id = db.save_analysis(Config.DATABASE_PATH, text, result, source,
+        analysis_id = db.save_analysis(Config.DATABASE_PATH, text, result, source, uid=current_uid(),
                                        redact=Config.REDACT_STORED_MESSAGES)
 
     return jsonify({
@@ -185,12 +213,12 @@ def api_chat():
 
 @app.get("/api/history")
 def api_history():
-    return jsonify({"ok": True, "items": db.list_analyses(Config.DATABASE_PATH)})
+    return jsonify({"ok": True, "items": db.list_analyses(Config.DATABASE_PATH, uid=current_uid())})
 
 
 @app.get("/api/history/<analysis_id>")
 def api_history_item(analysis_id):
-    record = db.get_analysis(Config.DATABASE_PATH, analysis_id)
+    record = db.get_analysis(Config.DATABASE_PATH, analysis_id, current_uid())
     if not record:
         return _error("Analysis not found", 404)
     return jsonify({"ok": True, "item": record})
@@ -198,20 +226,20 @@ def api_history_item(analysis_id):
 
 @app.delete("/api/history/<analysis_id>")
 def api_delete_item(analysis_id):
-    if not db.delete_analysis(Config.DATABASE_PATH, analysis_id):
+    if not db.delete_analysis(Config.DATABASE_PATH, analysis_id, current_uid()):
         return _error("Analysis not found", 404)
     return jsonify({"ok": True})
 
 
 @app.delete("/api/history")
 def api_clear_history():
-    return jsonify({"ok": True, "deleted": db.clear_history(Config.DATABASE_PATH)})
+    return jsonify({"ok": True, "deleted": db.clear_history(Config.DATABASE_PATH, current_uid())})
 
 
 @app.get("/api/stats")
 def api_stats():
-    stats = db.get_stats(Config.DATABASE_PATH)
-    stats["recent"] = db.list_analyses(Config.DATABASE_PATH, limit=5)
+    stats = db.get_stats(Config.DATABASE_PATH, current_uid())
+    stats["recent"] = db.list_analyses(Config.DATABASE_PATH, limit=5, uid=current_uid())
     return jsonify({"ok": True, **stats})
 
 

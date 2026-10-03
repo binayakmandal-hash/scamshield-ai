@@ -78,7 +78,7 @@
           <span class="connect__icon"><svg class="ic"><use href="#i-lock"/></svg></span>
           <div>
             <h3 id="connect-title">Connect your Gmail</h3>
-            <p class="muted" id="connect-text">ScamShield asks Google for permission to read your inbox, move emails to Spam or Trash, and create block filters. Your sign-in stays on this computer, and you can disconnect at any time.</p>
+            <p class="muted" id="connect-text">ScamShield asks Google for permission to read your inbox, move emails to Spam or Trash, and create block filters. {{ 'Your sign-in is private to your browser session' if public_mode else 'Your sign-in stays on this computer' }}, and you can disconnect at any time.</p>
             <div class="connect__actions">
               <a class="btn btn--primary btn--lg" id="connect-btn" href="/gmail/connect"><svg class="ic"><use href="#i-message"/></svg>Connect Gmail</a>
               <button class="btn btn--ghost btn--lg" type="button" data-switch="demo">Try the demo inbox</button>

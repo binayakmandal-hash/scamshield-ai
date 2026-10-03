@@ -140,6 +140,13 @@ python train.py path/to/phishing_dataset.csv
 ```
 ➡️ **Datasets, columns and accuracy: [docs/TRAINING.md](docs/TRAINING.md)**
 
+## Deploy online
+
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/binayakmandal-hash/scamshield-ai)
+
+The repo includes a [`render.yaml`](render.yaml) blueprint for Render's free plan. Deployed sites run in **public mode**: each visitor gets a private session with their own Gmail sign-in, history and learning, and AI calls are rate-limited per visitor.
+➡️ **Full guide: [docs/DEPLOY_RENDER.md](docs/DEPLOY_RENDER.md)**
+
 ## Configuration
 
 All settings live in `.env` (see [`.env.example`](.env.example)):
@@ -154,6 +161,8 @@ All settings live in `.env` (see [`.env.example`](.env.example)):
 | `GMAIL_SCAN_LIMIT` | `25` | Emails per scan |
 | `SAVE_HISTORY` | `true` | Save analyses to the local database |
 | `REDACT_STORED_MESSAGES` | `true` | Mask OTPs, phone numbers and email names before saving |
+| `PUBLIC_MODE` | `false` | `true` on a public website: a private session per visitor |
+| `AI_REQUESTS_PER_HOUR` | `60` | Per-visitor AI limit in public mode |
 
 ## Project structure
 
@@ -162,6 +171,8 @@ scamshield-ai/
 ├── app.py                 Flask app: pages, screenshot and analysis API
 ├── mail_routes.py         Gmail sign-in, inbox scan, actions, learning API
 ├── train.py               Train the learner on a CSV dataset
+├── users.py               Current user: "local", or a private id per visitor in public mode
+├── render.yaml            One-click Render deployment
 ├── config.py · database.py
 ├── services/
 │   ├── gmail_client.py    Gmail REST API + OAuth (requests only)
@@ -177,13 +188,13 @@ scamshield-ai/
 │   ├── seed_data.py       Built-in training examples
 │   └── demo_inbox.py      Sample mailbox
 ├── templates/ · static/   UI (HTML, CSS, vanilla JS; no build step)
-├── tests/                 39 unit and integration tests (no network needed)
+├── tests/                 42 unit and integration tests (no network needed)
 └── docs/                  Guides and screenshots
 ```
 
 ## Privacy and safety
 
-- 🔒 **Your Gmail sign-in stays on your computer** (`gmail_token.json`, git-ignored). **Disconnect** revokes it at Google.
+- 🔒 **Your Gmail sign-in stays on your computer** (`gmail_token.json`, git-ignored). **Disconnect** revokes it at Google. On a deployed site, each visitor's sign-in, history and learning are private to their own session.
 - 🚫 **Links are never opened.** All URL checks run on the text.
 - 🗑️ **Nothing is permanently deleted.** Delete moves to Trash (30 days), and every action has Undo.
 - ✉️ **It never sends email.**

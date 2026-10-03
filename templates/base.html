@@ -61,7 +61,11 @@
       </div>
       <div class="footer__privacy">
         <h2>Your privacy</h2>
+        {% if public_mode %}
+        <p>Each visitor has a private session: your Gmail sign-in, history and learning are visible only to you, and Disconnect revokes access. Links are checked as text and never opened. Screenshots aren't saved, and history masks long numbers and email names.</p>
+        {% else %}
         <p>Your Gmail sign-in is stored only on this computer, and Disconnect revokes it. Links are checked as text and never opened. Screenshots aren't saved, and history masks long numbers and email names.</p>
+        {% endif %}
       </div>
     </div>
   </footer>

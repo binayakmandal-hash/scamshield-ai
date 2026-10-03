@@ -5,3 +5,5 @@ Pillow>=10.0
 # Optional: offline screenshot OCR when no vision model is available
 # (also needs the Tesseract program: https://github.com/tesseract-ocr/tesseract)
 # pytesseract>=0.3.10
+# Production web server (used on Render / Linux; not needed for local Windows use)
+gunicorn>=22.0; platform_system != "Windows"

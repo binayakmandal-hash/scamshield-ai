@@ -138,12 +138,13 @@ def _evaluate(rows, folds=5, seed=7):
 
 
 class Learner:
-    def __init__(self, db_path: str):
+    def __init__(self, db_path: str, uid: str = db.LOCAL):
         self.db_path = db_path
+        self.uid = uid
         self.lock = threading.Lock()
         self.model = None
         self.stats = {}
-        saved = db.load_model(db_path)
+        saved = db.load_model(db_path, uid)
         if saved:
             self.model = NaiveBayes.from_dict(saved["model"])
             self.stats = saved.get("stats", {})
@@ -153,13 +154,13 @@ class Learner:
     def retrain(self) -> dict:
         rows = [(features(t), label, 1) for label, t in SEED_EXAMPLES]
         user_rows = []
-        for ex in db.list_examples(self.db_path):
+        for ex in db.list_examples(self.db_path, self.uid):
             weight = FEEDBACK_WEIGHT if ex["source"] == "feedback" else 1
             row = (features(ex["text"], ex["sender"] or ""), ex["label"], weight)
             (user_rows if ex["source"] == "feedback" else rows).append(row)
         all_rows = rows + user_rows
         model = NaiveBayes().fit(all_rows)
-        counts = db.example_counts(self.db_path)
+        counts = db.example_counts(self.db_path, self.uid)
         stats = {
             "seed": len(SEED_EXAMPLES),
             "dataset": counts.get("dataset", {"scam": 0, "safe": 0}),
@@ -170,7 +171,7 @@ class Learner:
         }
         with self.lock:
             self.model, self.stats = model, stats
-        db.save_model(self.db_path, {"model": model.to_dict(), "stats": stats})
+        db.save_model(self.db_path, {"model": model.to_dict(), "stats": stats}, self.uid)
         return stats
 
     @property

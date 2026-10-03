@@ -9,3 +9,6 @@ gmail_token.json
 
 # Personal drafts (not part of the project)
 SUBMISSION.md
+
+# Per-visitor Gmail tokens in public mode
+instance/

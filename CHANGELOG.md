@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.1.0] — 2026-10-03
+
+### Added
+- **Render deployment** with a `render.yaml` blueprint and gunicorn; see `docs/DEPLOY_RENDER.md`
+- **Public mode** (`PUBLIC_MODE=true`): each visitor gets a private session with their own Gmail sign-in, history, learning, sender rules and demo inbox
+- Per-visitor AI rate limit (`AI_REQUESTS_PER_HOUR`) to protect the API quota
+- Automatic upgrade of databases created by v1.0 (no data lost)
+- Tests for visitor isolation and database migration (42 tests in total)
+
 ## [1.0.0] — 2026-10-03
 
 First public release, built during Hacktoberfest 2026.
