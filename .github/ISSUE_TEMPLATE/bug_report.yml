@@ -1,0 +1,22 @@
+name: Bug report
+description: Something is broken or behaves unexpectedly
+labels: ["bug"]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened?
+      description: What did you do, what did you expect, and what happened instead?
+    validations:
+      required: true
+  - type: input
+    id: setup
+    attributes:
+      label: Setup
+      description: OS, Python version, AI_PROVIDER and model (e.g. Windows 11, Python 3.12, ollama gemma4:e4b)
+  - type: textarea
+    id: logs
+    attributes:
+      label: Error output
+      description: Paste any error from the terminal. Remove personal details first.
+      render: text

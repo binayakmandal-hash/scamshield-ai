@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}History · ScamShield AI{% endblock %}
+{% block content %}
+<section class="section page-top">
+  <div class="wrap">
+    <div class="page-head page-head--row">
+      <div>
+        <h1>Analysis history</h1>
+        <p class="muted">Stored only on this server. Long numbers and email names are masked before saving.</p>
+      </div>
+      <button class="btn btn--danger" id="clear-history" type="button" hidden>
+        <svg class="ic"><use href="#i-trash"/></svg><span>Delete all history</span>
+      </button>
+    </div>
+    <div id="history-root" class="history-list" aria-live="polite">
+      <p class="muted">Loading…</p>
+    </div>
+  </div>
+</section>
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/pages.js') }}"></script>
+{% endblock %}

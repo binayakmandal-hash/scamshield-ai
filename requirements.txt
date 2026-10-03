@@ -1,0 +1,7 @@
+Flask>=3.0
+python-dotenv>=1.0
+requests>=2.31
+Pillow>=10.0
+# Optional: offline screenshot OCR when no vision model is available
+# (also needs the Tesseract program: https://github.com/tesseract-ocr/tesseract)
+# pytesseract>=0.3.10

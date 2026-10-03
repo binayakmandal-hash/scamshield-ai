@@ -1,0 +1,239 @@
+{% extends "base.html" %}
+{% block content %}
+
+<!-- ============================== HERO ============================== -->
+<section class="hero">
+  <div class="wrap hero__grid">
+    <div class="hero__copy">
+      <h1>Don't Trust the Message. Understand It.</h1>
+      <p class="hero__sub">AI-powered analysis that checks your inbox, explains the warning signs in suspicious emails, and moves scams out of your way.</p>
+      <div class="hero__cta">
+        <a class="btn btn--primary btn--lg" href="#inbox"><svg class="ic"><use href="#i-message"/></svg>Scan my inbox</a>
+        <a class="btn btn--ghost btn--lg" href="#inbox" data-switch="demo">Try the demo inbox</a>
+      </div>
+      <ul class="hero__facts">
+        <li><svg class="ic"><use href="#i-shield"/></svg>Moves scams to Spam, with undo</li>
+        <li><svg class="ic"><use href="#i-cpu"/></svg>Learns from your decisions</li>
+        <li><svg class="ic"><use href="#i-link"/></svg>Links are checked, never opened</li>
+        <li><svg class="ic"><use href="#i-globe"/></svg>English, हिन्दी and বাংলা</li>
+      </ul>
+    </div>
+
+    <!-- Specimen: a preview of what an analysis looks like -->
+    <figure class="specimen" aria-label="Example: a scam email with its warning signs highlighted">
+      <div class="specimen__phone">
+        <div class="specimen__head">
+          <span class="specimen__avatar">SA</span>
+          <div><strong>SBI Alerts</strong><small>alerts.sbi.update@gmail.com</small></div>
+        </div>
+        <p class="specimen__bubble">
+          Dear Customer, your bank account will be
+          <mark class="sp-mark sev-high" style="--d:0">blocked within 30 minutes</mark>.
+          <mark class="sp-mark sev-high" style="--d:1">Verify immediately</mark> at
+          <mark class="sp-mark sev-medium" style="--d:2">secure-kyc-update.xyz</mark>
+          and share the <mark class="sp-mark sev-high" style="--d:3">OTP</mark> sent to you.
+        </p>
+      </div>
+      <figcaption class="specimen__notes">
+        <div class="specimen__score">
+          <span class="risk-dot risk-vhigh"></span>
+          <span>Very high risk</span>
+          <b>85<small>/100</small></b>
+        </div>
+        <ol>
+          <li><span class="note-bar sev-high"></span><b>+25</b> Time pressure and a threat to block the account</li>
+          <li><span class="note-bar sev-medium"></span><b>+25</b> Link ends in .xyz and isn't a bank domain</li>
+          <li><span class="note-bar sev-high"></span><b>+25</b> Asks for an OTP, which banks never do</li>
+          <li><span class="note-bar sev-low"></span><b>+10</b> Claims to be a bank but writes from Gmail</li>
+        </ol>
+      </figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- ============================== INBOX ============================== -->
+<section class="section inbox-section" id="inbox">
+  <div class="wrap">
+    <div class="section__head">
+      <h2>Your inbox</h2>
+      <p>ScamShield checks your latest emails, explains anything suspicious, and moves scams out of your way. Every action can be undone, and each one teaches it what you consider a scam.</p>
+    </div>
+
+    <div class="inbox" id="inbox-app" data-gmail-configured="{{ 'yes' if gmail_configured else 'no' }}" data-gmail-connected="{{ 'yes' if gmail_connected else 'no' }}">
+      <div class="tabs" role="tablist" aria-label="Mailbox">
+        <button type="button" class="tab is-active" role="tab" aria-selected="true" data-mode="gmail" id="tab-gmail">
+          <svg class="ic"><use href="#i-message"/></svg>Gmail
+        </button>
+        <button type="button" class="tab" role="tab" aria-selected="false" data-mode="demo" id="tab-demo" tabindex="-1">
+          <svg class="ic"><use href="#i-sparkles"/></svg>Demo inbox
+        </button>
+        <button type="button" class="tab" role="tab" aria-selected="false" data-mode="screenshot" id="tab-screenshot" tabindex="-1">
+          <svg class="ic"><use href="#i-image"/></svg>Screenshot
+        </button>
+      </div>
+
+      <!-- Gmail: not set up / not connected -->
+      <div class="inbox__panel" id="gmail-setup" hidden>
+        <div class="connect">
+          <span class="connect__icon"><svg class="ic"><use href="#i-lock"/></svg></span>
+          <div>
+            <h3 id="connect-title">Connect your Gmail</h3>
+            <p class="muted" id="connect-text">ScamShield asks Google for permission to read your inbox, move emails to Spam or Trash, and create block filters. Your sign-in stays on this computer, and you can disconnect at any time.</p>
+            <div class="connect__actions">
+              <a class="btn btn--primary btn--lg" id="connect-btn" href="/gmail/connect"><svg class="ic"><use href="#i-message"/></svg>Connect Gmail</a>
+              <button class="btn btn--ghost btn--lg" type="button" data-switch="demo">Try the demo inbox</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Inbox toolbar + list (Gmail when connected, or demo) -->
+      <div class="inbox__panel" id="inbox-panel" hidden>
+        <div class="inbox__toolbar">
+          <div class="inbox__account">
+            <span class="risk-dot inbox__live"></span>
+            <span id="account-label">Demo inbox</span>
+            <button type="button" class="link-btn" id="disconnect-btn" hidden>Disconnect</button>
+          </div>
+          <div class="inbox__controls">
+            <label class="field-inline">Emails
+              <select id="scan-limit"><option>10</option><option selected>25</option><option>50</option></select>
+            </label>
+            <label class="field-inline">Explain in
+              <select id="lang-select">
+                <option value="en">English</option>
+                <option value="hi">हिन्दी</option>
+                <option value="bn">বাংলা</option>
+              </select>
+            </label>
+            <button type="button" class="btn btn--primary" id="scan-btn"><svg class="ic"><use href="#i-search"/></svg><span>Scan inbox</span></button>
+          </div>
+        </div>
+
+        <div class="inbox__summary" id="inbox-summary" hidden>
+          <p id="summary-text"></p>
+          <button type="button" class="btn btn--danger" id="bulk-btn" hidden><svg class="ic"><use href="#i-shield"/></svg><span></span></button>
+        </div>
+
+        <ul class="mails" id="mail-list" aria-live="polite"></ul>
+
+        <div class="learning-strip" id="learning-strip" hidden>
+          <svg class="ic"><use href="#i-cpu"/></svg>
+          <span id="learning-text"></span>
+          <a href="/dashboard#learning">Manage learning</a>
+        </div>
+      </div>
+
+      <!-- Screenshot (WhatsApp / SMS) -->
+      <div class="inbox__panel" id="screenshot-panel" hidden>
+        <p class="muted panel-intro">Got a suspicious WhatsApp message or SMS? Upload a screenshot and ScamShield reads the text automatically. The image isn't stored.</p>
+        <label class="dropzone" id="dropzone" for="image-input">
+          <input type="file" id="image-input" accept="image/png,image/jpeg,image/webp" class="sr-only">
+          <span class="dropzone__icon"><svg class="ic"><use href="#i-upload"/></svg></span>
+          <span class="dropzone__title">Drop a screenshot here or <u>browse</u></span>
+          <span class="dropzone__hint">JPG, PNG or WebP, up to 8 MB. You can also paste an image with Ctrl+V.</span>
+        </label>
+        <div class="preview" id="image-preview" hidden>
+          <img id="preview-img" alt="Selected screenshot">
+          <div class="preview__info">
+            <strong id="preview-name"></strong>
+            <span id="preview-size"></span>
+            <button type="button" class="link-btn" id="remove-image">Remove</button>
+          </div>
+        </div>
+        <div class="analyzer__bar">
+          <button type="button" class="btn btn--primary btn--lg" id="analyze-btn"><svg class="ic"><use href="#i-shield-check"/></svg><span>Analyze screenshot</span></button>
+        </div>
+      </div>
+
+      <div class="form-error" id="form-error" role="alert" hidden></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================== RESULTS ============================== -->
+<section class="section results-section" id="results" hidden aria-live="polite">
+  <div class="wrap" id="results-root"></div>
+</section>
+
+<!-- ============================== HOW IT WORKS ============================== -->
+<section class="section how" id="how">
+  <div class="wrap">
+    <div class="section__head">
+      <h2>How it works</h2>
+      <p>Fixed safety checks, an open-weight AI model and a model that learns from you, with the working shown for every score.</p>
+    </div>
+    <ol class="how__steps">
+      <li>
+        <span class="how__num">1</span>
+        <h3>Connect your inbox</h3>
+        <p>Sign in with Google and ScamShield fetches your latest emails. For WhatsApp or SMS, upload a screenshot and Gemma 4 reads the text.</p>
+      </li>
+      <li>
+        <span class="how__num">2</span>
+        <h3>Every email is checked</h3>
+        <p>Fixed checks inspect the real link destinations and Gmail's sender verification. Gemma 4 explains the warning signs, and the learning model adds what it has learned from you.</p>
+      </li>
+      <li>
+        <span class="how__num">3</span>
+        <h3>You decide, it learns</h3>
+        <p>Move scams to Spam, block the sender, or mark an email safe. Everything can be undone, and each decision retrains the model so the next scan is better.</p>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<!-- ============================== LEARN ============================== -->
+<section class="section learn" id="learn">
+  <div class="wrap">
+    <div class="section__head">
+      <h2>Learn to Spot Scams</h2>
+      <p>Six patterns show up in most scam messages. Once you know them, they're hard to miss.</p>
+    </div>
+    <div class="learn__grid">
+      <article class="lesson">
+        <svg class="ic lesson__icon"><use href="#i-link"/></svg>
+        <h3>Suspicious links</h3>
+        <p>Check the actual domain before interacting. The part just before .com or .in is what matters.</p>
+        <code>sbi.co.in <span class="ok">official</span><br>sbi-kyc-verify.xyz <span class="bad">not SBI</span></code>
+      </article>
+      <article class="lesson">
+        <svg class="ic lesson__icon"><use href="#i-clock"/></svg>
+        <h3>Urgency</h3>
+        <p>Scammers may pressure people into acting quickly, before they have time to check.</p>
+        <code>"blocked within 30 minutes"</code>
+      </article>
+      <article class="lesson">
+        <svg class="ic lesson__icon"><use href="#i-lock"/></svg>
+        <h3>Sensitive information</h3>
+        <p>Never casually share passwords, OTPs, PINs or authentication codes. Banks don't ask for them.</p>
+        <code>"share the OTP to verify"</code>
+      </article>
+      <article class="lesson">
+        <svg class="ic lesson__icon"><use href="#i-gift"/></svg>
+        <h3>Too-good-to-be-true offers</h3>
+        <p>Unexpected rewards or guaranteed financial returns deserve verification, especially if a fee comes first.</p>
+        <code>"won ₹25 lakh, pay ₹4,999 to claim"</code>
+      </article>
+      <article class="lesson">
+        <svg class="ic lesson__icon"><use href="#i-user"/></svg>
+        <h3>Impersonation</h3>
+        <p>Verify unexpected requests through official channels, even if the name and logo look right.</p>
+        <code>"SBI Alerts" &lt;…@gmail.com&gt;</code>
+      </article>
+      <article class="lesson">
+        <svg class="ic lesson__icon"><use href="#i-clip"/></svg>
+        <h3>Unexpected attachments</h3>
+        <p>Don't open unexpected files or install apps without verifying the sender and context.</p>
+        <code>"install AnyDesk so we can help"</code>
+      </article>
+    </div>
+  </div>
+</section>
+
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/results.js') }}"></script>
+<script src="{{ url_for('static', filename='js/home.js') }}"></script>
+{% endblock %}

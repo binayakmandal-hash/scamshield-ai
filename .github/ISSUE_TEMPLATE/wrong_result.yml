@@ -1,0 +1,37 @@
+name: Wrong analysis (missed scam or false alarm)
+description: ScamShield missed a scam, or flagged a genuine message
+labels: ["detection"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you, these reports make ScamShield better for everyone.
+        **Before pasting, remove anything personal:** your name, phone number, account numbers, OTPs, addresses.
+        Replace them with placeholders like `98XXXXXX10`.
+  - type: dropdown
+    id: kind
+    attributes:
+      label: What went wrong?
+      options:
+        - It missed a scam (score too low)
+        - It flagged a genuine message (score too high)
+        - The explanation or category was wrong
+    validations:
+      required: true
+  - type: textarea
+    id: message
+    attributes:
+      label: The message (with personal details removed)
+      render: text
+    validations:
+      required: true
+  - type: input
+    id: result
+    attributes:
+      label: What ScamShield said
+      description: e.g. "Low Risk, 10/100, rule engine"
+  - type: dropdown
+    id: language
+    attributes:
+      label: Message language
+      options: [English, Hindi, Bengali, Hinglish, Other]

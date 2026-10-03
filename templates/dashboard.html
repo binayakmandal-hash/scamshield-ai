@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}Dashboard · ScamShield AI{% endblock %}
+{% block content %}
+<section class="section page-top">
+  <div class="wrap">
+    <div class="page-head page-head--row">
+      <div>
+        <h1>Dashboard</h1>
+        <p class="muted">A summary of the messages checked on this device.</p>
+      </div>
+      <a class="btn btn--primary" href="{{ url_for('index') }}#inbox"><svg class="ic"><use href="#i-search"/></svg>Scan my inbox</a>
+    </div>
+    <div id="dashboard-root" aria-live="polite"><p class="muted">Loading…</p></div>
+  </div>
+</section>
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/pages.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}ScamShield AI{% endblock %}</title>
+  <meta name="description" content="AI-powered analysis that helps you recognise suspicious messages and understand the warning signs.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23F5C451' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z'/%3E%3Cpath d='M9 12l2 2 4-4'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Roboto+Mono:wght@400;500&family=Noto+Sans+Bengali:wght@400;500&family=Noto+Sans+Devanagari:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <script>
+    // Apply saved theme before paint to avoid a flash.
+    try { var t = localStorage.getItem('ss-theme'); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
+  </script>
+</head>
+<body data-page="{{ page }}" data-ai="{{ 'on' if ai_enabled else 'off' }}">
+  {% include "icons.html" %}
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="nav">
+    <div class="nav__inner wrap">
+      <a class="brand" href="{{ url_for('index') }}" aria-label="ScamShield AI home">
+        <span class="brand__mark"><svg class="ic"><use href="#i-shield-check"/></svg></span>
+        <span class="brand__name">ScamShield <span>AI</span></span>
+      </a>
+      <nav class="nav__links" id="nav-links" aria-label="Main">
+        <a href="{{ url_for('index') }}#inbox" {% if page == 'home' %}aria-current="page"{% endif %}>Inbox</a>
+        <a href="{{ url_for('index') }}#learn">Learn</a>
+        <a href="{{ url_for('history_page') }}" {% if page == 'history' %}aria-current="page"{% endif %}>History</a>
+        <a href="{{ url_for('dashboard_page') }}" {% if page == 'dashboard' %}aria-current="page"{% endif %}>Dashboard</a>
+      </nav>
+      <div class="nav__tools">
+        <span class="engine-pill {{ 'is-ai' if ai_enabled else '' }}" title="{{ 'Open-weight model ' ~ ai_model ~ ' plus built-in safety checks' if ai_enabled else ai_reason }}">
+          <span class="engine-pill__dot"></span>{{ ai_model if ai_enabled else 'Offline rule engine' }}
+        </span>
+        <button class="icon-btn" id="theme-toggle" type="button" aria-label="Switch colour theme">
+          <svg class="ic ic-sun"><use href="#i-sun"/></svg><svg class="ic ic-moon"><use href="#i-moon"/></svg>
+        </button>
+        <button class="icon-btn nav__menu" id="nav-menu" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="nav-links">
+          <svg class="ic"><use href="#i-menu"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">{% block content %}{% endblock %}</main>
+
+  <footer class="footer">
+    <div class="wrap footer__inner">
+      <div class="footer__brand">
+        <a class="brand" href="{{ url_for('index') }}"><span class="brand__mark"><svg class="ic"><use href="#i-shield-check"/></svg></span><span class="brand__name">ScamShield <span>AI</span></span></a>
+        <p>An open-source awareness tool that explains warning signs. It can't prove a message is genuine or fraudulent, so always verify through official channels.</p>
+        <p><a href="https://github.com/binayakmandal-hash/scamshield-ai">Source code on GitHub</a> (MIT licence)</p>
+      </div>
+      <div class="footer__help">
+        <h2>Lost money or shared details?</h2>
+        <p>Call your bank using the number on your card or official app, then report it on the national cyber-crime helpline <strong>1930</strong> or at <strong>cybercrime.gov.in</strong>.</p>
+      </div>
+      <div class="footer__privacy">
+        <h2>Your privacy</h2>
+        <p>Your Gmail sign-in is stored only on this computer, and Disconnect revokes it. Links are checked as text and never opened. Screenshots aren't saved, and history masks long numbers and email names.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

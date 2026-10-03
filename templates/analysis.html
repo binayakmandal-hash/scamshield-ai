@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Saved analysis · ScamShield AI{% endblock %}
+{% block content %}
+<section class="section page-top">
+  <div class="wrap">
+    <a class="back-link" href="{{ url_for('history_page') }}"><svg class="ic"><use href="#i-arrow-left"/></svg>Back to history</a>
+    <div class="page-head">
+      <h1>Saved analysis</h1>
+      <p class="muted">
+        Analysed <time datetime="{{ record.created_at }}" data-local-time>{{ record.created_at }}</time>
+        from {{ 'a screenshot' if record.source == 'screenshot' else 'pasted text' }}.
+        Long numbers and email names were masked before saving.
+      </p>
+    </div>
+  </div>
+  <div class="wrap" id="results-root"></div>
+</section>
+<script type="application/json" id="saved-analysis">{{ record | tojson }}</script>
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/results.js') }}"></script>
+<script src="{{ url_for('static', filename='js/pages.js') }}"></script>
+{% endblock %}

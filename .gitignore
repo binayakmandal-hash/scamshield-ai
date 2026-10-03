@@ -1,0 +1,11 @@
+.env
+database.db
+__pycache__/
+*.pyc
+.venv/
+venv/
+client_secret*.json
+gmail_token.json
+
+# Personal drafts (not part of the project)
+SUBMISSION.md

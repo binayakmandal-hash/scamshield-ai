@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}Not found · ScamShield AI{% endblock %}
+{% block content %}
+<section class="section page-top">
+  <div class="wrap empty">
+    <svg class="ic empty__icon"><use href="#i-search"/></svg>
+    <h1>This page doesn't exist</h1>
+    <p class="muted">The analysis may have been deleted from history.</p>
+    <a class="btn btn--primary" href="{{ url_for('index') }}#inbox">Scan my inbox</a>
+  </div>
+</section>
+{% endblock %}
