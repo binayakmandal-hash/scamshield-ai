@@ -1,10 +1,7 @@
-<div align="center">
-
-# 🛡️ ScamShield AI
-
-### Don't trust the message. Understand it.
-
-An AI inbox guardian that finds scam and phishing emails, **explains why they're suspicious**, moves them out of your way, and **learns from every decision you make**.
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/readme/banner-dark.svg">
+  <img src="docs/readme/banner-light.svg" width="100%" alt="ScamShield AI: don't trust the message, understand it">
+</picture>
 
 [![tests](https://github.com/binayakmandal-hash/scamshield-ai/actions/workflows/tests.yml/badge.svg)](https://github.com/binayakmandal-hash/scamshield-ai/actions/workflows/tests.yml)
 ![Python](https://img.shields.io/badge/python-3.10%2B-3776AB?logo=python&logoColor=white)
@@ -14,11 +11,11 @@ An AI inbox guardian that finds scam and phishing emails, **explains why they're
 ![License: MIT](https://img.shields.io/badge/license-MIT-green)
 ![Hacktoberfest 2026](https://img.shields.io/badge/Hacktoberfest-2026-blueviolet)
 
-<img src="docs/screenshots/hero.png" alt="ScamShield AI home page showing a scam email with highlighted warning signs and its risk score" width="900">
+An inbox guardian that finds scam and phishing emails, **explains why they're suspicious**, moves them out of your way, and **learns from every decision you make**.
 
-</div>
+**[Try the live demo](https://scamshield-ai-yln0.onrender.com)**. The demo inbox works without signing in. It runs on Render's free plan, so the first load can take about a minute.
 
----
+<img src="docs/screenshots/hero.png" alt="ScamShield AI home page showing a scam email with highlighted warning signs and its risk score" width="100%">
 
 ## The problem
 
@@ -52,30 +49,30 @@ Spam filters miss the personal ones. When they do catch one, they never say **wh
 
 ## Features
 
-| | Feature | Details |
-|---|---|---|
-| 📬 | **Gmail inbox scan** | Official Google sign-in (OAuth 2.0). Scans your latest 10–50 emails. |
-| 🔍 | **Evidence highlighting** | Suspicious phrases highlighted in the email itself, coloured by strength. |
-| 🧮 | **Transparent score** | Sum of named signals. The server rebuilds the score from evidence, so the AI can't invent numbers. |
-| ✅ | **Quote verification** | Every quote from the AI is checked against the email. Paraphrases are labelled and count for half. |
-| 🔗 | **Safe link analysis** | Real destinations behind HTML buttons, look-alike domains (`sbi-kyc-verify.xyz`), typosquats (`amazom.in`), shorteners, risky endings. **Links are never opened.** |
-| 🪪 | **Sender verification** | Gmail's SPF / DKIM / DMARC results. A failed check adds points; a verified official domain lowers them. Free providers (gmail.com) never count as verified. |
-| 🧠 | **Learns from you** | Spam / Block / Delete / Safe each become training data for a Naive Bayes model that retrains in milliseconds. |
-| 📚 | **Dataset training** | `python train.py dataset.csv` imports public phishing or spam datasets. |
-| ↩️ | **Reversible actions** | Spam, Block (Gmail filter), Delete (to Trash) and Safe, each with Undo, plus "Move all risky to Spam". |
-| 👨‍👩‍👧 | **Send to family** | A short, link-free warning note in English, Hindi or Bengali to forward on WhatsApp. |
-| 💬 | **Ask ScamShield** | Follow-up chat: *"Which part should I worry about?"*, *"I already clicked, what now?"* |
-| 🖼️ | **Screenshot check** | Upload a WhatsApp or SMS screenshot; Gemma 4 reads the text. |
-| 🌐 | **Multilingual** | Detects English, Hindi, Bengali and Hinglish scam patterns. |
-| 🎭 | **Demo inbox** | Ten realistic sample emails to try every feature without a Google account. |
-| 📴 | **Works offline** | A built-in rule engine takes over if the AI model is unavailable. |
+| Feature | Details |
+|---|---|
+| **Gmail inbox scan** | Official Google sign-in (OAuth 2.0). Scans your latest 10–50 emails. |
+| **Evidence highlighting** | Suspicious phrases highlighted in the email itself, coloured by strength. |
+| **Transparent score** | Sum of named signals. The server rebuilds the score from evidence, so the AI can't invent numbers. |
+| **Quote verification** | Every quote from the AI is checked against the email. Paraphrases are labelled and count for half. |
+| **Safe link analysis** | Real destinations behind HTML buttons, look-alike domains (`sbi-kyc-verify.xyz`), typosquats (`amazom.in`), shorteners, risky endings. **Links are never opened.** |
+| **Sender verification** | Gmail's SPF / DKIM / DMARC results. A failed check adds points; a verified official domain lowers them. Free providers (gmail.com) never count as verified. |
+| **Learns from you** | Spam / Block / Delete / Safe each become training data for a Naive Bayes model that retrains in milliseconds. |
+| **Dataset training** | `python train.py dataset.csv` imports public phishing or spam datasets. |
+| **Reversible actions** | Spam, Block (Gmail filter), Delete (to Trash) and Safe, each with Undo, plus "Move all risky to Spam". |
+| **Send to family** | A short, link-free warning note in English, Hindi or Bengali to forward on WhatsApp. |
+| **Ask ScamShield** | Follow-up chat: *"Which part should I worry about?"*, *"I already clicked, what now?"* |
+| **Screenshot check** | Upload a WhatsApp or SMS screenshot; Gemma 4 reads the text. |
+| **Multilingual** | Detects English, Hindi, Bengali and Hinglish scam patterns. |
+| **Demo inbox** | Ten realistic sample emails to try every feature without a Google account. |
+| **Works offline** | A built-in rule engine takes over if the AI model is unavailable. |
 
 ## How it works
 
 ```mermaid
 flowchart LR
-    A["📬 Gmail inbox<br/>(OAuth)"] --> C
-    B["🖼️ Screenshot"] --> OCR["Gemma 4 vision"] --> C
+    A["Gmail inbox<br/>(OAuth)"] --> C
+    B["Screenshot"] --> OCR["Gemma 4 vision"] --> C
     C["Email text<br/>+ real link targets"] --> D["Safe checks<br/>links · sender · SPF/DKIM/DMARC"]
     D --> E["Gemma 4<br/>structured JSON"]
     D --> F["Rule engine<br/>(offline fallback)"]
@@ -131,21 +128,21 @@ The pill at the top right of the app shows which engine is active.
 ### Connect Gmail
 
 Create a free OAuth client in Google Cloud, which takes about 10 minutes, then click **Connect Gmail**.
-➡️ **Step-by-step guide: [docs/GMAIL_SETUP.md](docs/GMAIL_SETUP.md)**
+**Step-by-step guide: [docs/GMAIL_SETUP.md](docs/GMAIL_SETUP.md)**
 
 ### Train the model
 
 ```bash
 python train.py path/to/phishing_dataset.csv
 ```
-➡️ **Datasets, columns and accuracy: [docs/TRAINING.md](docs/TRAINING.md)**
+**Datasets, columns and accuracy: [docs/TRAINING.md](docs/TRAINING.md)**
 
 ## Deploy online
 
 [![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/binayakmandal-hash/scamshield-ai)
 
 The repo includes a [`render.yaml`](render.yaml) blueprint for Render's free plan. Deployed sites run in **public mode**: each visitor gets a private session with their own Gmail sign-in, history and learning, and AI calls are rate-limited per visitor.
-➡️ **Full guide: [docs/DEPLOY_RENDER.md](docs/DEPLOY_RENDER.md)**
+**Full guide: [docs/DEPLOY_RENDER.md](docs/DEPLOY_RENDER.md)**
 
 ## Configuration
 
@@ -194,12 +191,12 @@ scamshield-ai/
 
 ## Privacy and safety
 
-- 🔒 **Your Gmail sign-in stays on your computer** (`gmail_token.json`, git-ignored). **Disconnect** revokes it at Google. On a deployed site, each visitor's sign-in, history and learning are private to their own session.
-- 🚫 **Links are never opened.** All URL checks run on the text.
-- 🗑️ **Nothing is permanently deleted.** Delete moves to Trash (30 days), and every action has Undo.
-- ✉️ **It never sends email.**
-- 🎭 **Saved history masks** OTPs, phone, account and Aadhaar numbers, and email usernames.
-- 🧾 **No false certainty.** It never says "definitely a scam"; scores show their evidence.
+- **Your Gmail sign-in stays on your computer** (`gmail_token.json`, git-ignored). **Disconnect** revokes it at Google. On a deployed site, each visitor's sign-in, history and learning are private to their own session.
+- **Links are never opened.** All URL checks run on the text.
+- **Nothing is permanently deleted.** Delete moves to Trash (30 days), and every action has Undo.
+- **It never sends email.**
+- **Saved history masks** OTPs, phone, account and Aadhaar numbers, and email usernames.
+- **No false certainty.** It never says "definitely a scam"; scores show their evidence.
 
 Full details: [docs/PRIVACY.md](docs/PRIVACY.md). To report a vulnerability, see [SECURITY.md](SECURITY.md).
 
