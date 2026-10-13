@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+{% block title %}I already paid · ScamShield AI{% endblock %}
+{% block content %}
+<section class="golden">
+  <div class="wrap golden__head">
+    <div>
+      <p class="tool__kicker">Golden hour</p>
+      <h1>You paid a scammer. Here's what to do, in order.</h1>
+      <p class="golden__lede">Breathe. This happens to careful people every day. The sooner it's reported, the better the chance the bank can hold the money before it's withdrawn.</p>
+    </div>
+    <div class="clock" id="clock">
+      <p class="clock__label">Time since you paid</p>
+      <p class="clock__time" id="clock-time">--:--</p>
+      <label class="clock__set">Paid at <input type="datetime-local" id="paid-at"></label>
+      <p class="clock__note" id="clock-note"></p>
+    </div>
+  </div>
+</section>
+
+<section class="section golden__body">
+  <div class="wrap golden__grid">
+    <ol class="steps-check" id="checklist">
+      <li data-step="1930">
+        <label class="steps-check__tick"><input type="checkbox"><span></span></label>
+        <div>
+          <h2>Call 1930</h2>
+          <p>The national cyber-crime helpline. Tell them the amount, the time and the UTR number from your payment. They can alert the banks involved to hold the money.</p>
+          <a class="btn btn--alarm btn--lg" href="tel:1930"><svg class="ic"><use href="#i-phone"/></svg>Call 1930 now</a>
+        </div>
+      </li>
+      <li data-step="bank">
+        <label class="steps-check__tick"><input type="checkbox"><span></span></label>
+        <div>
+          <h2>Call your bank</h2>
+          <p>Use the number on the back of your card or in your bank's official app, never one from a search result or from the caller. Ask them to block UPI and net banking and to raise a fraud dispute for this payment.</p>
+        </div>
+      </li>
+      <li data-step="portal">
+        <label class="steps-check__tick"><input type="checkbox"><span></span></label>
+        <div>
+          <h2>Report at cybercrime.gov.in</h2>
+          <p>Choose <b>Report Financial Fraud</b>. You can paste the complaint we draft below. Write down the acknowledgement number they give you; the bank will ask for it.</p>
+          <a class="btn btn--ghost" href="https://cybercrime.gov.in" target="_blank" rel="noopener"><svg class="ic"><use href="#i-globe"/></svg>Open cybercrime.gov.in</a>
+        </div>
+      </li>
+      <li data-step="lock">
+        <label class="steps-check__tick"><input type="checkbox"><span></span></label>
+        <div>
+          <h2>Lock things down</h2>
+          <p>Change your UPI PIN and net-banking password. If they made you install AnyDesk or another app, uninstall it now. If you shared an OTP, tell the bank what it was for.</p>
+        </div>
+      </li>
+      <li data-step="evidence">
+        <label class="steps-check__tick"><input type="checkbox"><span></span></label>
+        <div>
+          <h2>Keep the evidence</h2>
+          <p>Don't delete the chat or the call log. Screenshot the chat, the caller's number, the payment and the UPI ID they used.</p>
+        </div>
+      </li>
+      <li data-step="second">
+        <label class="steps-check__tick"><input type="checkbox"><span></span></label>
+        <div>
+          <h2>Watch for the second scam</h2>
+          <p>Anyone who contacts you promising to "recover" the money for a fee is also a scammer, even if they say they're police, a lawyer or the bank.</p>
+        </div>
+      </li>
+      <li data-step="tell">
+        <label class="steps-check__tick"><input type="checkbox"><span></span></label>
+        <div>
+          <h2>Tell someone you trust</h2>
+          <p>You don't have to handle this alone. These are organised gangs who do this all day; being fooled once isn't a reflection on you.</p>
+        </div>
+      </li>
+    </ol>
+
+    <div class="complaint card" id="complaint">
+      <h2 class="card__title"><svg class="ic"><use href="#i-list"/></svg>Your complaint, ready to paste</h2>
+      <p class="muted">Upload the payment screenshot or paste the bank SMS. We'll fill in what we can read; check and correct everything before you send it.</p>
+      <label class="dropzone dropzone--slim" id="receipt-drop" for="receipt-file">
+        <input type="file" id="receipt-file" accept="image/png,image/jpeg,image/webp" class="sr-only">
+        <span class="dropzone__title" id="receipt-name"><svg class="ic"><use href="#i-upload"/></svg> Payment screenshot, or <u>browse</u></span>
+      </label>
+      <textarea id="receipt-text" class="textarea--short" placeholder="…or paste the debit SMS, e.g. Rs.25,000 debited from A/c XX4521 to VPA … UPI Ref No 4286…"></textarea>
+      <div class="complaint__bar">
+        <button type="button" class="btn btn--primary" id="receipt-btn"><svg class="ic"><use href="#i-search"/></svg><span>Read the details</span></button>
+        <button type="button" class="link-btn" id="receipt-sample">Use an example</button>
+      </div>
+      <p class="form-error" id="receipt-error" role="alert" hidden></p>
+
+      <form class="fields" id="fields" autocomplete="off">
+        <label>Amount (₹)<input name="amount" inputmode="decimal"></label>
+        <label>Date<input name="date"></label>
+        <label>Time<input name="time"></label>
+        <label>UTR / UPI reference<input name="utr" inputmode="numeric"></label>
+        <label>Transaction ID<input name="txn_id"></label>
+        <label>Paid to (UPI ID)<input name="payee_vpa"></label>
+        <label>Paid to (name shown)<input name="payee_name"></label>
+        <label>Your bank<input name="bank"></label>
+        <label>Paid using (app)<input name="app"></label>
+        <label>Scammer's phone number(s)<input name="phone"></label>
+        <label class="fields__wide">What happened, in a few lines<textarea name="story" class="textarea--short" placeholder="e.g. A caller said he was from Mumbai police, kept me on a video call and told me to transfer money to an RBI account."></textarea></label>
+      </form>
+
+      <div class="draft">
+        <div class="draft__head"><h3>Complaint text</h3><button type="button" class="btn btn--soft" data-copy="draft-text"><svg class="ic"><use href="#i-clip"/></svg><span>Copy</span></button></div>
+        <pre class="draft__text" id="draft-text"></pre>
+        <div class="draft__head"><h3>Message for your bank</h3><button type="button" class="btn btn--soft" data-copy="bank-text"><svg class="ic"><use href="#i-clip"/></svg><span>Copy</span></button></div>
+        <pre class="draft__text" id="bank-text"></pre>
+      </div>
+      <p class="inline-note"><svg class="ic"><use href="#i-lock"/></svg>The screenshot is read and discarded. Nothing on this page is saved to your history; your ticks are remembered only in this browser.</p>
+    </div>
+  </div>
+</section>
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/goldenhour.js') }}"></script>
+{% endblock %}

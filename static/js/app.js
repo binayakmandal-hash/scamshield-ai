@@ -1,4 +1,4 @@
-/* ScamShield AI — shared helpers (loaded on every page). */
+/* ScamShield AI: shared helpers (loaded on every page). */
 (function () {
   'use strict';
   const SS = (window.SS = window.SS || {});
@@ -27,7 +27,10 @@
       if (value === null || value === undefined || value === false) continue;
       if (key === 'class') node.className = value;
       else if (key === 'text') node.textContent = value;
-      else if (key === 'style' && typeof value === 'object') Object.assign(node.style, value);
+      else if (key === 'style' && typeof value === 'object') {
+        // CSS custom properties (like --d for animation delays) need setProperty.
+        for (const [k, v] of Object.entries(value)) k.startsWith('--') ? node.style.setProperty(k, v) : (node.style[k] = v);
+      }
       else if (key.startsWith('on') && typeof value === 'function') node.addEventListener(key.slice(2), value);
       else node.setAttribute(key, value === true ? '' : value);
     }
@@ -66,6 +69,42 @@
     set(key, value) { try { localStorage.setItem(key, value); } catch (e) { /* storage unavailable */ } },
   };
 
+  /** Wire a label.dropzone + file input: click, drag-and-drop and (optionally) Ctrl+V paste all call onFile(file). */
+  SS.fileDrop = function ({ zone, input, onFile, paste = false, accept = /^image\// }) {
+    if (!zone || !input) return;
+    input.addEventListener('change', () => { if (input.files[0]) onFile(input.files[0]); });
+    ['dragenter', 'dragover'].forEach((ev) => zone.addEventListener(ev, (e) => { e.preventDefault(); zone.classList.add('is-over'); }));
+    ['dragleave', 'drop'].forEach((ev) => zone.addEventListener(ev, (e) => { e.preventDefault(); zone.classList.remove('is-over'); }));
+    zone.addEventListener('drop', (e) => { if (e.dataTransfer.files[0]) onFile(e.dataTransfer.files[0]); });
+    if (paste) {
+      document.addEventListener('paste', (e) => {
+        const item = [...(e.clipboardData?.items || [])].find((i) => accept.test(i.type));
+        if (item) { e.preventDefault(); onFile(item.getAsFile()); }
+      });
+    }
+  };
+
+  /** Copy text and briefly confirm on the button. */
+  SS.copy = async function (text, btn) {
+    try { await navigator.clipboard.writeText(text); } catch (e) {
+      const ta = Object.assign(document.createElement('textarea'), { value: text });
+      document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove();
+    }
+    if (btn) {
+      const label = btn.querySelector('span') || btn;
+      const old = label.textContent;
+      label.textContent = 'Copied';
+      setTimeout(() => { label.textContent = old; }, 1600);
+    }
+  };
+
+  /** Show an error in a .form-error element (or hide it with null). */
+  SS.showError = function (box, message) {
+    if (!box) return;
+    box.textContent = message || '';
+    box.hidden = !message;
+  };
+
   // ---- theme toggle -------------------------------------------------------
   const root = document.documentElement;
   const toggle = document.getElementById('theme-toggle');
@@ -81,6 +120,24 @@
       toggle.setAttribute('aria-label', `Switch to ${next === 'dark' ? 'light' : 'dark'} theme`);
     });
   }
+
+  // ---- simple mode (bigger text, plain answers) --------------------------
+  SS.isSimple = () => root.classList.contains('is-simple');
+  const simpleBtn = document.getElementById('simple-toggle');
+  if (simpleBtn) {
+    simpleBtn.setAttribute('aria-pressed', String(SS.isSimple()));
+    simpleBtn.addEventListener('click', () => {
+      const on = !SS.isSimple();
+      root.classList.toggle('is-simple', on);
+      simpleBtn.setAttribute('aria-pressed', String(on));
+      SS.store.set('ss-simple', on ? '1' : '0');
+      // Re-draw an open analysis in the new mode.
+      if (SS.lastResult) SS.renderResult(SS.lastResult.root, SS.lastResult.data, { ...SS.lastResult.opts, full: false });
+    });
+  }
+
+  // Respect "reduce motion": animations finish instantly.
+  SS.reducedMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   // ---- mobile menu --------------------------------------------------------
   const menuBtn = document.getElementById('nav-menu');

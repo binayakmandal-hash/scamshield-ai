@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block title %}UPI check · ScamShield AI{% endblock %}
+{% block content %}
+<section class="section page-top tool">
+  <div class="wrap">
+    <header class="tool__head">
+      <p class="tool__kicker">UPI translator</p>
+      <h1>Which way will the money go?</h1>
+      <p class="tool__lede">"Scan to receive your refund." "Approve to get the cashback." On UPI, a PIN only ever sends money out. Upload the QR code or payment request and we'll say, in plain words, what really happens if you go ahead.</p>
+    </header>
+
+    <div class="tool__grid">
+      <form class="card tool__input" id="upi-form" novalidate>
+        <label class="dropzone" id="upi-drop" for="upi-file">
+          <input type="file" id="upi-file" accept="image/png,image/jpeg,image/webp" class="sr-only">
+          <span class="dropzone__icon"><svg class="ic"><use href="#i-scan"/></svg></span>
+          <span class="dropzone__title">Drop a QR code or payment screenshot, or <u>browse</u></span>
+          <span class="dropzone__hint">A photo of a QR, a screenshot of a collect request, or the chat where they sent it. You can paste an image with Ctrl+V.</span>
+        </label>
+        <div class="preview" id="upi-preview" hidden>
+          <img id="upi-img" alt="Selected image">
+          <div class="preview__info"><strong id="upi-name"></strong><span>Image only used for this check</span>
+            <button type="button" class="link-btn" id="upi-clear">Remove</button></div>
+        </div>
+        <label class="tool__label" for="upi-text">Or paste what they sent you</label>
+        <textarea id="upi-text" class="textarea--short" placeholder="e.g. Ramesh has requested ₹2,000. Approve to receive your cashback."></textarea>
+        <div class="tool__bar">
+          <div class="quick-examples">Try:
+            <button type="button" class="chip" data-sample="collect">Collect request</button>
+            <button type="button" class="chip" data-sample="qr">Refund QR</button>
+            <button type="button" class="chip" data-sample="mistake">'Sent by mistake'</button>
+          </div>
+          <label class="field-inline">Explain in
+            <select id="upi-lang"><option value="en">English</option><option value="hi">हिन्दी</option><option value="bn">বাংলা</option></select>
+          </label>
+          <button type="submit" class="btn btn--primary btn--lg" id="upi-btn"><svg class="ic"><use href="#i-search"/></svg><span>Translate it</span></button>
+        </div>
+        <p class="form-error" id="upi-error" role="alert" hidden></p>
+      </form>
+
+      <aside class="tool__aside rules-card" aria-label="UPI rules">
+        <h2 class="aside__title">Three UPI rules</h2>
+        <ol class="rules">
+          <li><b>A PIN sends money.</b> Always. You never enter it to receive.</li>
+          <li><b>A QR sends money.</b> Scanning one pays the person who made it.</li>
+          <li><b>A request asks you to pay.</b> "Collect requests" move money out when you approve.</li>
+        </ol>
+      </aside>
+    </div>
+
+    <div id="upi-result" class="tool__result" aria-live="polite"></div>
+  </div>
+</section>
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/upicheck.js') }}"></script>
+{% endblock %}

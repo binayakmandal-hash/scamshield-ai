@@ -18,6 +18,7 @@ import requests
 
 from . import prompt_builder as prompts
 from . import rule_engine
+from . import scam_scripts
 from .schema import AnalysisFormatError, extract_json, normalize_analysis
 from .sender_analyzer import analyze_sender
 from .url_analyzer import analyze_urls
@@ -285,3 +286,17 @@ class ScamAnalyzer:
             except (AIUnavailable, AnalysisFormatError) as exc:
                 log.warning("Chat fallback: %s", exc)
         return rule_engine.chat_answer(question, analysis)
+
+    # ------------------------------------------------------- script tracker
+    def script_check(self, raw_chat: str) -> dict:
+        """Which scam script does this conversation follow, and what comes next? Rules first, AI as a checked second opinion."""
+        result = scam_scripts.track(raw_chat)
+        if result.get("messages") and self._ai_ready():
+            try:
+                ai = self.llm.generate_json(
+                    prompts.build_script_prompt(scam_scripts.parse_chat(raw_chat), scam_scripts.library()),
+                    system=prompts.SAFETY_RULES, temperature=0.1)
+                result = scam_scripts.apply_ai(result, ai, raw_chat)
+            except (AIUnavailable, AnalysisFormatError) as exc:
+                log.warning("Script check fell back to rules: %s", exc)
+        return result

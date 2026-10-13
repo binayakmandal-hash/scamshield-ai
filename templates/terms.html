@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}Terms and conditions · ScamShield AI{% endblock %}
+{% block content %}
+<section class="section page-top legal">
+  <div class="wrap legal__wrap">
+    <header class="legal__head">
+      <h1>Terms and conditions</h1>
+      <p class="muted">Effective 13 October 2026</p>
+    </header>
+
+    <div class="legal__body">
+      <p>By using ScamShield AI you agree to these terms. If you don't agree, please don't use it.</p>
+
+      <h2>What ScamShield is</h2>
+      <p>ScamShield is a free, open-source awareness tool. It points out warning signs that are commonly found in scams and explains them. It is not a bank, a law-enforcement agency or a legal or financial adviser.</p>
+
+      <h2>No guarantee</h2>
+      <p>ScamShield can be wrong in both directions. A message it marks as low risk may still be a scam, and a genuine message may be flagged. A chat that doesn't match a known scam script is not proof that it's safe. Always verify through official channels, such as the phone number printed on your card or the company's official app, before you pay, share details or click. You are responsible for the decisions you make.</p>
+
+      <h2>If you have lost money</h2>
+      <p>ScamShield can help you prepare a complaint, but it does not file one for you and cannot recover money. Contact your bank and the national cyber-crime helpline 1930, or report at cybercrime.gov.in, as quickly as possible.</p>
+
+      <h2>Acceptable use</h2>
+      <ul>
+        <li>Only connect an email account that you own or are allowed to manage.</li>
+        <li>Only use On a call on calls you are part of, and follow the laws on recording and listening to calls where you live.</li>
+        <li>Don't use ScamShield to write scam messages, to test how to get around its checks for harmful purposes, or to overload the service.</li>
+        <li>The public demo limits how many AI checks each visitor can run per hour.</li>
+      </ul>
+
+      <h2>Actions in your Gmail</h2>
+      <p>ScamShield only changes your mailbox when you click an action (Spam, Trash, Block or Safe). Trash is recoverable in Gmail for 30 days, and every action has an Undo button while the page is open.</p>
+
+      <h2>Availability</h2>
+      <p>The public demo is provided as is, without warranties of any kind, and may be slow, change or go offline at any time. To the extent the law allows, the authors are not liable for any loss arising from using or being unable to use ScamShield.</p>
+
+      <h2>Open-source licence</h2>
+      <p>The source code is available under the <a href="https://github.com/binayakmandal-hash/scamshield-ai/blob/main/LICENSE" rel="noopener">MIT licence</a>. These terms cover use of the hosted service; the licence covers the code.</p>
+
+      <h2>Privacy</h2>
+      <p>How your information is handled is described in the <a href="{{ url_for('privacy_page') }}">privacy policy</a>.</p>
+
+      <h2>Changes</h2>
+      <p>These terms may be updated. The current version and its date are always on this page.</p>
+    </div>
+  </div>
+</section>
+{% endblock %}

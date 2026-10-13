@@ -5,8 +5,8 @@
 <section class="hero">
   <div class="wrap hero__grid">
     <div class="hero__copy">
-      <h1>Don't Trust the Message. Understand It.</h1>
-      <p class="hero__sub">AI-powered analysis that checks your inbox, explains the warning signs in suspicious emails, and moves scams out of your way.</p>
+      <h1>Check a suspicious message before you reply, pay or click.</h1>
+      <p class="hero__sub">ScamShield reads your Gmail inbox, WhatsApp chats and UPI payment requests, marks the exact words that look like a scam, and tells you what to do next.</p>
       <div class="hero__cta">
         <a class="btn btn--primary btn--lg" href="#inbox"><svg class="ic"><use href="#i-message"/></svg>Scan my inbox</a>
         <a class="btn btn--ghost btn--lg" href="#inbox" data-switch="demo">Try the demo inbox</a>
@@ -21,6 +21,7 @@
 
     <!-- Specimen: a preview of what an analysis looks like -->
     <figure class="specimen" aria-label="Example: a scam email with its warning signs highlighted">
+      <p class="specimen__label">Example: how a checked email looks</p>
       <div class="specimen__phone">
         <div class="specimen__head">
           <span class="specimen__avatar">SA</span>
@@ -157,6 +158,37 @@
 </section>
 
 <!-- ============================== HOW IT WORKS ============================== -->
+<section class="section tools-home" id="tools">
+  <div class="wrap">
+    <div class="section__head">
+      <h2>Not an email? Use these.</h2>
+      <p>Scams also arrive on WhatsApp, as UPI requests and as phone calls. Each check below works without signing in.</p>
+    </div>
+    <div class="tool-cards">
+      <a class="tool-card" href="{{ url_for('tools.chat_check_page') }}">
+        <span class="tool-card__icon"><svg class="ic"><use href="#i-chat"/></svg></span>
+        <h3>Chat check</h3>
+        <p>Paste a WhatsApp chat. See which scam script it follows, which step it has reached and what they will ask for next.</p>
+      </a>
+      <a class="tool-card" href="{{ url_for('tools.upi_check_page') }}">
+        <span class="tool-card__icon"><svg class="ic"><use href="#i-scan"/></svg></span>
+        <h3>UPI check</h3>
+        <p>Upload a QR code or payment request. Find out which way the money moves, how much and to whom, before you enter a PIN.</p>
+      </a>
+      <a class="tool-card" href="{{ url_for('tools.call_copilot_page') }}">
+        <span class="tool-card__icon"><svg class="ic"><use href="#i-phone"/></svg></span>
+        <h3>On a call</h3>
+        <p>Put a suspicious call on speaker. Get a warning when the caller uses a known pressure tactic, and a line to say before you hang up.</p>
+      </a>
+      <a class="tool-card tool-card--alarm" href="{{ url_for('tools.golden_hour_page') }}">
+        <span class="tool-card__icon"><svg class="ic"><use href="#i-alert"/></svg></span>
+        <h3>I already paid</h3>
+        <p>What to do in the first hour, in order, plus a complaint for 1930 and your bank filled in from your payment screenshot.</p>
+      </a>
+    </div>
+  </div>
+</section>
+
 <section class="section how" id="how">
   <div class="wrap">
     <div class="section__head">

@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% block title %}Call copilot · ScamShield AI{% endblock %}
+{% block content %}
+<section class="section page-top tool">
+  <div class="wrap">
+    <header class="tool__head">
+      <p class="tool__kicker">Call copilot</p>
+      <h1>On a call that feels wrong?</h1>
+      <p class="tool__lede">Put the call on speaker and press Listen. ScamShield follows what the caller says and warns you the moment it hears a pressure tactic: fake police, "don't tell anyone", an OTP request, a "safe account". It tells you what to say, and when to hang up.</p>
+    </header>
+
+    <div class="copilot">
+      <div class="callpad" id="callpad" data-state="idle">
+        <div class="callpad__top">
+          <span class="callpad__status" id="call-status"><span class="callpad__dot"></span><span id="call-status-text">Not listening</span></span>
+          <label class="field-inline callpad__lang">Caller speaks
+            <select id="call-lang"><option value="en">English</option><option value="hi">हिन्दी</option><option value="bn">বাংলা</option></select>
+          </label>
+        </div>
+        <button type="button" class="mic" id="mic-btn" aria-pressed="false">
+          <span class="mic__rings" aria-hidden="true"><i></i><i></i><i></i></span>
+          <svg class="ic mic__icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>
+          <span class="mic__label" id="mic-label">Listen</span>
+        </button>
+        <p class="callpad__hint" id="mic-hint">Works in Chrome and Edge. Allow the microphone when asked.</p>
+        <div class="transcript" id="transcript" aria-live="off" aria-label="What the caller said">
+          <p class="transcript__empty">What the caller says will appear here.</p>
+        </div>
+        <form class="callpad__type" id="type-form">
+          <label class="sr-only" for="type-input">Type what the caller says</label>
+          <input id="type-input" autocomplete="off" placeholder="No microphone? Type what they say and press Enter">
+          <button class="btn btn--soft" type="submit">Add</button>
+        </form>
+        <div class="callpad__foot">
+          <button type="button" class="link-btn" id="practice-btn"><svg class="ic"><use href="#i-sparkles"/></svg>Play a practice call</button>
+          <button type="button" class="link-btn" id="reset-btn">Clear</button>
+        </div>
+      </div>
+
+      <div class="alerts" aria-live="polite">
+        <div class="meter" id="meter" data-level="listening">
+          <div class="meter__track"><i></i><i></i><i></i><i></i></div>
+          <p class="meter__text" id="meter-text">No warning signs heard yet.</p>
+        </div>
+        <div class="hangup" id="hangup" hidden>
+          <h2>Hang up now.</h2>
+          <p>Say <q>I'll call back on the official number</q>, then end the call. Don't stay on the line to argue.</p>
+          <div class="hangup__actions">
+            <a class="btn btn--xl btn--ink" id="family-call" href="#" hidden><svg class="ic"><use href="#i-phone"/></svg><span>Call my family</span></a>
+            <a class="btn btn--xl btn--outline" href="tel:1930"><svg class="ic"><use href="#i-phone"/></svg>Call 1930</a>
+          </div>
+        </div>
+        <ol class="alert-list" id="alert-list"></ol>
+
+        <details class="family" id="family">
+          <summary><svg class="ic"><use href="#i-user"/></svg><span id="family-summary">Add a family member to call in one tap</span></summary>
+          <form id="family-form" class="family__form">
+            <label>Name<input id="family-name" autocomplete="off" placeholder="e.g. Didi"></label>
+            <label>Phone number<input id="family-phone" type="tel" inputmode="tel" autocomplete="off" placeholder="+91 98xxxxxxx"></label>
+            <button class="btn btn--primary" type="submit">Save on this device</button>
+          </form>
+          <p class="muted small">Saved only in this browser. ScamShield never sees it.</p>
+        </details>
+      </div>
+    </div>
+
+    <p class="privacy-line"><svg class="ic"><use href="#i-lock"/></svg><span>Speech is turned into text by your browser's own speech service (in Chrome, that's Google's). The matching happens on this page: ScamShield's server never receives the call or the transcript, and nothing is saved.</span></p>
+  </div>
+</section>
+<script type="application/json" id="tactics-data">{{ tactics|tojson }}</script>
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/copilot.js') }}"></script>
+{% endblock %}

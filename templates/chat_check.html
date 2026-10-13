@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block title %}Chat check · ScamShield AI{% endblock %}
+{% block content %}
+<section class="section page-top tool">
+  <div class="wrap">
+    <header class="tool__head">
+      <p class="tool__kicker">Scam script tracker</p>
+      <h1>Where is this chat going?</h1>
+      <p class="tool__lede">Most scams follow a script: the same steps, in the same order. Paste a conversation and see which script it matches, how far along it is, and what they'll ask for next, so you can stop one step early.</p>
+    </header>
+
+    <div class="tool__grid">
+      <form class="card tool__input" id="chat-form" novalidate>
+        <div class="tabs" role="tablist" aria-label="How to add the chat">
+          <button type="button" class="tab is-active" role="tab" aria-selected="true" data-panel="paste" id="tab-paste"><svg class="ic"><use href="#i-message"/></svg>Paste</button>
+          <button type="button" class="tab" role="tab" aria-selected="false" data-panel="file" id="tab-file" tabindex="-1"><svg class="ic"><use href="#i-clip"/></svg>WhatsApp export</button>
+        </div>
+        <div class="tool__panel" data-panel="paste">
+          <label class="sr-only" for="chat-text">Conversation</label>
+          <textarea id="chat-text" placeholder="Paste the conversation here. One message per line works, e.g.&#10;Priya: Hi! Part-time job, earn ₹3000 daily by liking videos&#10;Me: ok&#10;Priya: Join our Telegram group for prepaid tasks"></textarea>
+          <div class="quick-examples">Try:
+            <button type="button" class="chip" data-sample="task">Part-time job chat</button>
+            <button type="button" class="chip" data-sample="arrest">'CBI' video call</button>
+            <button type="button" class="chip" data-sample="olx">OLX buyer</button>
+            <button type="button" class="chip" data-sample="family">Family chat</button>
+          </div>
+        </div>
+        <div class="tool__panel" data-panel="file" hidden>
+          <label class="dropzone" id="chat-drop" for="chat-file">
+            <input type="file" id="chat-file" accept=".txt,.zip,text/plain,application/zip" class="sr-only">
+            <span class="dropzone__icon"><svg class="ic"><use href="#i-upload"/></svg></span>
+            <span class="dropzone__title" id="chat-file-name">Drop the exported chat here or <u>browse</u></span>
+            <span class="dropzone__hint">In WhatsApp: open the chat → ⋮ → More → Export chat → Without media. A .txt or .zip both work.</span>
+          </label>
+        </div>
+        <div class="tool__bar">
+          <p class="inline-note"><svg class="ic"><use href="#i-lock"/></svg>The chat is checked and thrown away. It isn't saved to history.</p>
+          <button type="submit" class="btn btn--primary btn--lg" id="chat-btn"><svg class="ic"><use href="#i-search"/></svg><span>Check the chat</span></button>
+        </div>
+        <p class="form-error" id="chat-error" role="alert" hidden></p>
+      </form>
+
+      <aside class="tool__aside" aria-label="Scripts we know">
+        <h2 class="aside__title">Scripts we know</h2>
+        <ul class="script-list" id="script-list">
+          <li>Part-time task scam</li><li>Fake KYC or account block</li><li>Digital arrest</li>
+          <li>Fake trading or investment group</li><li>Fake job offer with a fee</li><li>Courier or parcel fee</li>
+          <li>Electricity disconnection</li><li>Prize, lottery or KBC</li><li>Buyer sends a QR or payment request</li>
+        </ul>
+        <p class="muted small">If a chat doesn't match a script, that isn't proof it's safe. It only means it doesn't follow one of these.</p>
+      </aside>
+    </div>
+
+    <div id="chat-result" class="tool__result" aria-live="polite"></div>
+  </div>
+</section>
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/chatcheck.js') }}"></script>
+{% endblock %}

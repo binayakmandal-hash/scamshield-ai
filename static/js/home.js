@@ -1,4 +1,4 @@
-/* ScamShield AI — home page: Gmail / demo inbox, actions with undo, screenshot check. */
+/* ScamShield AI: home page: Gmail / demo inbox, actions with undo, screenshot check. */
 (function () {
   'use strict';
   const SS = window.SS;
@@ -166,7 +166,7 @@
           el('span', { class: 'mail__from', text: it.from_name || it.from_email }),
           el('span', { class: 'mail__addr', text: it.from_email }),
           el('span', { class: 'mail__date', text: timeAgo(it.timestamp) })),
-        el('span', { class: 'mail__subject' }, it.subject, ' ', el('span', { text: '— ' + (it.snippet || '') })),
+        el('span', { class: 'mail__subject' }, it.subject, ' ', el('span', { text: it.snippet ? '· ' + it.snippet : '' })),
         it.flags.length || it.sender_rule
           ? el('span', { class: 'mail__flags' },
             it.sender_rule === 'trusted' ? el('span', { class: 'flag-chip', text: 'Trusted sender' }) : null,
@@ -267,6 +267,7 @@
       SS.renderResult(resultsRoot, data, {
         onAgain: () => { node.scrollIntoView({ behavior: 'smooth', block: 'center' }); node.querySelector('.mail__main').focus({ preventScroll: true }); },
         againLabel: 'Back to inbox',
+        onAction: (action) => (it._done ? Promise.resolve(true) : act(it, node, action)),
       });
     } catch (e) {
       resultsRoot.replaceChildren(el('p', { class: 'notice', text: e.message }));

@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block title %}Privacy policy · ScamShield AI{% endblock %}
+{% block content %}
+<section class="section page-top legal">
+  <div class="wrap legal__wrap">
+    <header class="legal__head">
+      <h1>Privacy policy</h1>
+      <p class="muted">Effective 13 October 2026</p>
+    </header>
+
+    <div class="legal__body">
+      <p>ScamShield AI is an open-source tool that checks messages, chats, payment requests and calls for signs of a scam. Those messages often contain exactly what scammers want: phone numbers, bank names and sometimes one-time passwords. This page explains what ScamShield does with that information. It describes the code in the public repository; if someone else runs a copy of ScamShield, they are responsible for how they run it.</p>
+
+      <h2>What we collect, and why</h2>
+      <table class="legal__table">
+        <thead><tr><th>Information</th><th>What happens to it</th><th>Kept?</th></tr></thead>
+        <tbody>
+          <tr><td>Gmail sign-in (if you connect Gmail)</td><td>Used to read your recent emails, move emails to Spam or Trash, and create block filters when you ask. ScamShield never asks for permission to send email.</td><td>Stored {{ 'for your browser session' if public_mode else 'on this computer' }} until you click Disconnect, which also revokes it at Google.</td></tr>
+          <tr><td>Emails and pasted messages you check</td><td>Analysed to find warning signs.</td><td>An analysis you open is saved to your history with long numbers and email names masked (for example <code>••••••••10</code> and <code>r•••@gmail.com</code>). You can delete one or all of it on the History page.</td></tr>
+          <tr><td>Your decisions (Spam, Safe, Block)</td><td>Used to train a small model that learns what you consider a scam.</td><td>Yes, masked the same way. Dashboard → Forget my feedback deletes them.</td></tr>
+          <tr><td>Screenshots, QR codes and payment receipts</td><td>Read to extract text, QR contents and payment details.</td><td>No. They are processed in memory and discarded.</td></tr>
+          <tr><td>Chats checked on Chat check</td><td>Matched against known scam scripts.</td><td>No. They are not added to your history.</td></tr>
+          <tr><td>Calls on the On a call page</td><td>Your browser turns speech into text and the page checks it for pressure tactics. ScamShield's server never receives the audio or the transcript.</td><td>No.</td></tr>
+          <tr><td>Family contact, checklist ticks, theme and Simple mode</td><td>Remembered for your convenience.</td><td>Only in your own browser's storage. ScamShield's server never receives them.</td></tr>
+        </tbody>
+      </table>
+
+      <h2>Who else sees your data</h2>
+      <ul>
+        <li><b>The AI model.</b> {% if ai_enabled %}This copy of ScamShield uses <b>{{ ai_model }}</b>. {% endif %}When ScamShield runs a model on your own computer (Ollama), message text never leaves your machine. When it uses a hosted model, the text being checked is sent to that model's provider for analysis and is governed by the provider's terms. The public demo uses Google AI Studio. When no model is available, ScamShield's built-in rules run on the server and nothing is sent anywhere.</li>
+        <li><b>Your browser's speech service.</b> On the On a call page, speech-to-text is done by your browser. In Chrome and Edge that service is run by Google or Microsoft respectively.</li>
+        <li><b>Google.</b> Gmail actions go directly to Gmail's official API.</li>
+        <li><b>Nobody else.</b> ScamShield has no advertising, no analytics and no third-party trackers, and it never sells or shares your data.</li>
+      </ul>
+
+      <h2>Google user data</h2>
+      <p>ScamShield's use of information received from Google APIs adheres to the <a href="https://developers.google.com/terms/api-services-user-data-policy" rel="noopener">Google API Services User Data Policy</a>, including the Limited Use requirements. Gmail data is used only to show you the analysis and to carry out the actions you choose. It is not used for advertising and is not transferred to anyone except as described above.</p>
+
+      <h2>Links in messages</h2>
+      <p>ScamShield never opens, fetches or follows links found in messages or QR codes. Links are checked as text only.</p>
+
+      <h2>Cookies</h2>
+      <p>{% if public_mode %}This site sets one cookie that holds a random session id, so your Gmail sign-in, history and learning stay separate from other visitors'. It expires after a week.{% else %}When run on your own computer, ScamShield sets one session cookie used during Gmail sign-in.{% endif %} There are no advertising or tracking cookies.</p>
+
+      <h2>Your choices</h2>
+      <ul>
+        <li>Disconnect Gmail at any time from the inbox.</li>
+        <li>Delete single analyses or all history on the History page.</li>
+        <li>Delete everything ScamShield learned from you on the Dashboard.</li>
+        <li>Whoever runs ScamShield can turn history off entirely with <code>SAVE_HISTORY=false</code>.</li>
+      </ul>
+
+      <h2>Children</h2>
+      <p>ScamShield is not directed at children under 13 and does not knowingly collect their information.</p>
+
+      <h2>Changes and contact</h2>
+      <p>If this policy changes, the new version and its date will appear on this page and in the repository's history. Questions or concerns can be raised as an issue on <a href="https://github.com/binayakmandal-hash/scamshield-ai/issues" rel="noopener">GitHub</a>.</p>
+    </div>
+  </div>
+</section>
+{% endblock %}

@@ -184,7 +184,7 @@ def build_family_note_prompt(analysis: dict, lang: str = "en") -> str:
 Write a short, warm WhatsApp message (40-70 words) that someone can forward to a parent, grandparent or friend
 who received the message analysed below. Say plainly what the message is asking for, name the one or two
 biggest warning signs, and say exactly what to do (and not do). No jargon, no fear-mongering, no certainty
-claims, no links, no emojis beyond one at the start. Sign off as "- sent via ScamShield".
+claims, no links, no emojis. Sign off as "- sent via ScamShield".
 {SAFETY_RULES}
 {lang_line}
 Return ONLY JSON: {{"note": "..."}}
@@ -192,4 +192,27 @@ Return ONLY JSON: {{"note": "..."}}
 <analysis>
 {json.dumps(compact, ensure_ascii=False)}
 </analysis>
+""".strip()
+
+
+def build_script_prompt(messages: list, library: list) -> str:
+    chat = "\n".join(f"{m.get('who') or '?'}: {m.get('text', '')[:400]}" for m in messages[-60:])
+    return f"""
+Scams follow scripts: the same steps in the same order. Below is a library of known scam scripts and a
+conversation the user is worried about. Decide which script (if any) the conversation follows and which step
+it has reached. Only pick a script from the library. If none fits, use "script_id": "none".
+{SAFETY_RULES}
+- "evidence" must be 1-3 short quotes (4-15 words) copied EXACTLY from the conversation that show the current step.
+- "note" is one plain sentence for the user about what is happening, with non-absolute wording.
+
+Return ONLY JSON: {{"script_id": "id from the library or none", "current_step": integer (1-based),
+"evidence": ["exact quote"], "note": "..."}}
+
+<library>
+{json.dumps(library, ensure_ascii=False)}
+</library>
+
+<conversation>
+{chat[:6000]}
+</conversation>
 """.strip()

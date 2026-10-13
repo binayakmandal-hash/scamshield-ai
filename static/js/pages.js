@@ -1,4 +1,4 @@
-/* ScamShield AI — saved analysis, history and dashboard pages. */
+/* ScamShield AI: saved analysis, history and dashboard pages. */
 (function () {
   'use strict';
   const SS = window.SS;
@@ -145,7 +145,7 @@
     const fb = l.feedback || { scam: 0, safe: 0 };
     const ds = l.dataset || { scam: 0, safe: 0 };
     const m = l.metrics || {};
-    const pct = (v) => (v == null ? '—' : `${Math.round(v * 100)}%`);
+    const pct = (v) => (v == null ? 'n/a' : `${Math.round(v * 100)}%`);
     const metric = (label, value) => el('div', {}, el('dt', { text: label }), el('dd', { text: value }));
 
     const retrain = el('button', { class: 'btn btn--soft', type: 'button' }, icon('cpu'), 'Retrain now');

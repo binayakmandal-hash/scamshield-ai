@@ -12,6 +12,7 @@ from PIL import Image, UnidentifiedImageError
 import database as db
 from config import Config
 import mail_routes
+import tools_routes
 from users import current_uid
 from services.ai_analyzer import AIUnavailable, ScamAnalyzer, build_client
 
@@ -23,6 +24,7 @@ app.config.from_object(Config)
 analyzer = ScamAnalyzer(build_client(Config))
 db.init_db(Config.DATABASE_PATH)
 mail = mail_routes.init_app(app, Config, analyzer)  # Gmail inbox, demo inbox and learning
+app.register_blueprint(tools_routes.create_blueprint(Config, analyzer))  # chat check, UPI check, call copilot, golden hour
 
 VALID_LANGS = {"en", "hi", "bn"}
 
@@ -38,7 +40,8 @@ def _error(message: str, status: int = 400):
 # --------------------------------------------------------------------------- #
 # Public deployments: per-visitor limit on requests that call the AI model
 # --------------------------------------------------------------------------- #
-_AI_ENDPOINTS = ("/api/analyze", "/api/chat", "/api/eli12", "/api/action-plan", "/api/family-note")
+_AI_ENDPOINTS = ("/api/analyze", "/api/chat", "/api/eli12", "/api/action-plan", "/api/family-note",
+                 "/api/chat-check", "/api/upi-check", "/api/paid/extract")
 _ai_calls = {}
 
 
@@ -92,6 +95,16 @@ def history_page():
 @app.get("/dashboard")
 def dashboard_page():
     return render_template("dashboard.html", page="dashboard")
+
+
+@app.get("/privacy")
+def privacy_page():
+    return render_template("privacy.html", page="privacy")
+
+
+@app.get("/terms")
+def terms_page():
+    return render_template("terms.html", page="terms")
 
 
 @app.errorhandler(404)

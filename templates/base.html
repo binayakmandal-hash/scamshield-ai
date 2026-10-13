@@ -4,16 +4,17 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{% block title %}ScamShield AI{% endblock %}</title>
-  <meta name="description" content="AI-powered analysis that helps you recognise suspicious messages and understand the warning signs.">
+  <meta name="description" content="Check suspicious emails, WhatsApp chats and UPI requests, see the exact warning signs, and know what to do next.">
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23F5C451' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z'/%3E%3Cpath d='M9 12l2 2 4-4'/%3E%3C/svg%3E">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Roboto+Mono:wght@400;500&family=Noto+Sans+Bengali:wght@400;500&family=Noto+Sans+Devanagari:wght@400;500&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:wght@400;500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,700&family=Caveat:wght@600&family=Atkinson+Hyperlegible:wght@400;700&family=Noto+Sans+Bengali:wght@400;500;700&family=Noto+Sans+Devanagari:wght@400;500;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
   <script>
     // Apply saved theme before paint to avoid a flash.
     try { var t = localStorage.getItem('ss-theme'); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
+    // Simple mode (big text for parents) is applied before paint too.
+    try { if (localStorage.getItem('ss-simple') === '1') document.documentElement.classList.add('is-simple'); } catch (e) {}
   </script>
 </head>
 <body data-page="{{ page }}" data-ai="{{ 'on' if ai_enabled else 'off' }}">
@@ -23,19 +24,26 @@
   <header class="nav">
     <div class="nav__inner wrap">
       <a class="brand" href="{{ url_for('index') }}" aria-label="ScamShield AI home">
-        <span class="brand__mark"><svg class="ic"><use href="#i-shield-check"/></svg></span>
+        <span class="brand__mark" aria-hidden="true"><svg viewBox="0 0 26 28" width="24" height="26"><path class="brand__shield" d="M13 1.5 L24 5.5 V13 C24 20 19 24.5 13 26.5 C7 24.5 2 20 2 13 V5.5 Z"/><path class="brand__tick" d="M8 14 L11.5 17.5 L18.5 10"/></svg></span>
         <span class="brand__name">ScamShield <span>AI</span></span>
       </a>
       <nav class="nav__links" id="nav-links" aria-label="Main">
         <a href="{{ url_for('index') }}#inbox" {% if page == 'home' %}aria-current="page"{% endif %}>Inbox</a>
-        <a href="{{ url_for('index') }}#learn">Learn</a>
+        <a href="{{ url_for('tools.chat_check_page') }}" {% if page == 'chat' %}aria-current="page"{% endif %}>Chat check</a>
+        <a href="{{ url_for('tools.upi_check_page') }}" {% if page == 'upi' %}aria-current="page"{% endif %}>UPI check</a>
+        <a href="{{ url_for('tools.call_copilot_page') }}" {% if page == 'call' %}aria-current="page"{% endif %}>On a call</a>
         <a href="{{ url_for('history_page') }}" {% if page == 'history' %}aria-current="page"{% endif %}>History</a>
         <a href="{{ url_for('dashboard_page') }}" {% if page == 'dashboard' %}aria-current="page"{% endif %}>Dashboard</a>
+        <a class="nav__paid-m" href="{{ url_for('tools.golden_hour_page') }}" {% if page == 'paid' %}aria-current="page"{% endif %}>I already paid a scammer</a>
       </nav>
       <div class="nav__tools">
+        <a class="paid-btn" href="{{ url_for('tools.golden_hour_page') }}" {% if page == 'paid' %}aria-current="page"{% endif %}><span class="paid-btn__dot" aria-hidden="true"></span>I already paid</a>
         <span class="engine-pill {{ 'is-ai' if ai_enabled else '' }}" title="{{ 'Open-weight model ' ~ ai_model ~ ' plus built-in safety checks' if ai_enabled else ai_reason }}">
           <span class="engine-pill__dot"></span>{{ ai_model if ai_enabled else 'Offline rule engine' }}
         </span>
+        <button class="simple-toggle" id="simple-toggle" type="button" aria-pressed="false" title="Bigger text and plain answers, made for parents and grandparents">
+          <span class="simple-toggle__knob" aria-hidden="true"></span>Simple mode
+        </button>
         <button class="icon-btn" id="theme-toggle" type="button" aria-label="Switch colour theme">
           <svg class="ic ic-sun"><use href="#i-sun"/></svg><svg class="ic ic-moon"><use href="#i-moon"/></svg>
         </button>
@@ -51,13 +59,14 @@
   <footer class="footer">
     <div class="wrap footer__inner">
       <div class="footer__brand">
-        <a class="brand" href="{{ url_for('index') }}"><span class="brand__mark"><svg class="ic"><use href="#i-shield-check"/></svg></span><span class="brand__name">ScamShield <span>AI</span></span></a>
+        <a class="brand" href="{{ url_for('index') }}"><span class="brand__mark" aria-hidden="true"><svg viewBox="0 0 26 28" width="24" height="26"><path class="brand__shield" d="M13 1.5 L24 5.5 V13 C24 20 19 24.5 13 26.5 C7 24.5 2 20 2 13 V5.5 Z"/><path class="brand__tick" d="M8 14 L11.5 17.5 L18.5 10"/></svg></span><span class="brand__name">ScamShield <span>AI</span></span></a>
         <p>An open-source awareness tool that explains warning signs. It can't prove a message is genuine or fraudulent, so always verify through official channels.</p>
         <p><a href="https://github.com/binayakmandal-hash/scamshield-ai">Source code on GitHub</a> (MIT licence)</p>
+        <p class="footer__legal"><a href="{{ url_for('privacy_page') }}">Privacy policy</a><a href="{{ url_for('terms_page') }}">Terms and conditions</a></p>
       </div>
       <div class="footer__help">
         <h2>Lost money or shared details?</h2>
-        <p>Call your bank using the number on your card or official app, then report it on the national cyber-crime helpline <strong>1930</strong> or at <strong>cybercrime.gov.in</strong>.</p>
+        <p>Call your bank using the number on your card or official app, then report it on the national cyber-crime helpline <strong>1930</strong> or at <strong>cybercrime.gov.in</strong>. <a href="{{ url_for('tools.golden_hour_page') }}">Open the step-by-step guide</a>.</p>
       </div>
       <div class="footer__privacy">
         <h2>Your privacy</h2>
