@@ -30,14 +30,14 @@ sequenceDiagram
 
 ## Scoring
 
-The risk score is **always the sum of the score breakdown**, clamped to 0–100. The level follows from the score:
+The risk score is **always the sum of the score breakdown**, clamped to 0-100. The level follows from the score:
 
 | Score | Level |
 |---|---|
-| 0–24 | Low Risk |
-| 25–49 | Suspicious |
-| 50–74 | High Risk |
-| 75–100 | Very High Risk |
+| 0-24 | Low Risk |
+| 25-49 | Suspicious |
+| 50-74 | High Risk |
+| 75-100 | Very High Risk |
 
 **Signal sources**
 
@@ -48,9 +48,9 @@ The risk score is **always the sum of the score breakdown**, clamped to 0–100.
 | Impersonation | claims "SBI" but writes from gmail.com, or links to a non-official domain | +15 |
 | Sender verification | DMARC fail | +20 |
 | Learner | ≥70% similar to known scams | up to +20 |
-| Your blocked senders | — | +30 |
+| Your blocked senders | none | +30 |
 | Verified official sender | DMARC/DKIM pass on an official brand domain (never free providers) | −20 |
-| Your trusted senders | — | −40 |
+| Your trusted senders | none | −40 |
 
 ### Avoiding false alarms
 

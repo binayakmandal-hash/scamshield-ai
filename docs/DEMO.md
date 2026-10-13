@@ -3,7 +3,7 @@
 ## Before judging (10 minutes)
 
 1. `python app.py`, then open **http://127.0.0.1:5000** (use 127.0.0.1, not localhost).
-2. **Gmail:** if `client_secret.json` is set up (README → Connect Gmail), connect your account now, not in front of judges. Send yourself 2–3 scam-style test emails from another account, using the demo inbox emails as templates, so your real inbox has something to catch.
+2. **Gmail:** if `client_secret.json` is set up (README → Connect Gmail), connect your account now, not in front of judges. Send yourself 2 or 3 scam-style test emails from another account, using the demo inbox emails as templates, so your real inbox has something to catch.
 3. **Backup:** the **Demo inbox** tab works with no internet and no Google account. If sign-in or Wi-Fi fails, switch to it and keep going.
 4. Optional, for a stronger model: `python train.py dataset.csv` with a phishing-email CSV, then restart.
 5. Zoom the browser to 110%.
@@ -26,19 +26,19 @@
 
 ## 2-minute script
 
-> **(0:00 – Problem)**
+> **(0:00, Problem)**
 > Scam emails like *"Your SBI account will be blocked in 30 minutes, verify now"* reach every inbox, and the people we love click them. Spam filters miss them, and when they do catch one, they never tell you *why*.
 >
-> **(0:20 – Product)**
+> **(0:20, Product)**
 > ScamShield AI connects to Gmail, scores every email, and explains the warning signs. *[Show inbox.]* The fake SBI alert is at the top, very high risk. My real HDFC OTP email is low risk. It mentions an OTP too, but it says *never share it*, and Gmail confirms it really came from hdfcbank.com.
 >
-> **(0:45 – Explain)**
+> **(0:45, Explain)**
 > *[Open the SBI email.]* Every warning sign is highlighted: time pressure, a request for my account number and OTP. It claims to be SBI but comes from a Gmail address, and the button hides a .xyz look-alike link, which we found without ever opening it. The score is the sum of these signals, so nothing is a black box.
 >
-> **(1:10 – Act and learn)**
+> **(1:10, Act and learn)**
 > *[Click Spam, then "Move all risky to Spam".]* One click moves scams out, and everything can be undone. Each decision trains our learning model. *[Dashboard.]* Here's what it has learned and how accurate it is, measured with cross-validation. If it's ever wrong, I mark the email safe and it adapts.
 >
-> **(1:40 – How it's built, close)**
+> **(1:40, How it's built, close)**
 > Flask, Gmail's official API with OAuth, Gemma 4 for explanations, and a Naive Bayes model we wrote ourselves that learns from you. Don't trust the message. Understand it.
 
 ## Likely questions

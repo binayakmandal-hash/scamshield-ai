@@ -25,7 +25,7 @@ git push
 | `GOOGLE_CLIENT_SECRET` | Same client (copy with the ⧉ icon) |
 | `GMAIL_REDIRECT_URI` | `https://scamshield-ai.onrender.com/oauth2callback` (fix it in step 3 if Render gives a different URL) |
 
-4. Click **Apply**. The first build takes 2–4 minutes. When it says **Live**, open the URL at the top of the service page.
+4. Click **Apply**. The first build takes 2-4 minutes. When it says **Live**, open the URL at the top of the service page.
 
 **No Blueprint?** Use **New → Web Service** instead, choose the repo, and set:
 - **Build command:** `pip install -r requirements.txt`

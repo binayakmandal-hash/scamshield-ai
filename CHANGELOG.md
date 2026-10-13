@@ -1,6 +1,20 @@
 # Changelog
 
-## [1.1.0] — 2026-10-03
+## [1.2.0] - 2026-10-13
+
+### Added
+- **Chat check**: a scam script tracker. Matches a pasted chat or WhatsApp export (`.txt` / `.zip`) against 9 scam scripts, shows the step reached and the scammer's next move. The AI model's answer is only used when its quotes appear word for word in the chat.
+- **UPI check**: decodes UPI QR codes (OpenCV) and payment-request screenshots and explains which way the money moves, in English, Hindi or Bengali.
+- **On a call**: a call copilot that warns about pressure tactics live, using the browser's speech recognition. Includes a practice call and a one-tap family contact.
+- **I already paid**: a golden-hour checklist with a timer, and a complaint drafted from the payment receipt.
+- **Simple mode** for parents and grandparents, and the "evidence board" redesign with highlighted quotes and margin notes.
+- Privacy policy and terms pages.
+- `evaluation/`: held-out test cases and `docs/EVALUATION.md` with measured results.
+
+### Fixed
+- An email address was read as a UPI ID; naming the payment app ("on Google Pay") was treated as impersonating it; a screen-sharing request with no UPI ID was reported as "no payment found".
+
+## [1.1.0] - 2026-10-03
 
 ### Added
 - **Render deployment** with a `render.yaml` blueprint and gunicorn; see `docs/DEPLOY_RENDER.md`
@@ -9,12 +23,12 @@
 - Automatic upgrade of databases created by v1.0 (no data lost)
 - Tests for visitor isolation and database migration (42 tests in total)
 
-## [1.0.0] — 2026-10-03
+## [1.0.0] - 2026-10-03
 
 First public release, built during Hacktoberfest 2026.
 
 ### Added
-- **Gmail inbox scanning** with Google OAuth: score your latest 10–50 emails
+- **Gmail inbox scanning** with Google OAuth: score your latest 10-50 emails
 - **Actions with Undo:** Spam, Block sender (Gmail filter), Delete (to Trash), Mark safe, and "Move all risky to Spam"
 - **Learning model:** Naive Bayes that retrains after every decision, with cross-validated accuracy on the Dashboard
 - `train.py` to train on public phishing or spam datasets (CSV)

@@ -8,7 +8,7 @@ ScamShield handles exactly the information scammers want: emails with phone numb
 |---|---|---|
 | Gmail sign-in token | Your computer only (`gmail_token.json`) | Yes, until you click **Disconnect** (which also revokes it at Google) |
 | Email content | Read from Gmail into memory while the app runs | Only analyses you open are saved, **with numbers and email names masked** |
-| Email content sent to the AI | **Local mode (Ollama):** never leaves your computer.<br>**Hosted mode (Google AI Studio):** sent to Google's API for analysis | Not stored by ScamShield |
+| Email content sent to the AI | **Local mode (Ollama):** never leaves your computer.<br>**Hosted mode (an OpenAI-compatible server, e.g. Google AI Studio on the public demo):** sent to that provider for analysis | Not stored by ScamShield |
 | Screenshots | Processed in memory | **Never saved** |
 | Your decisions (Spam, Safe…) | `database.db` on your computer, masked | Yes, for learning. **Dashboard → Forget my feedback** clears them |
 
@@ -36,3 +36,14 @@ Turn saving off completely with `SAVE_HISTORY=false`.
 With `PUBLIC_MODE=true` (the default in `render.yaml`), each visitor gets a private session: their Gmail token, history, feedback, sender rules and demo inbox are stored under a random session id that only their browser holds. AI calls are rate-limited per visitor. See [DEPLOY_RENDER.md](DEPLOY_RENDER.md).
 
 For a real public launch beyond a demo, add user accounts with per-user tokens, HTTPS, rate limiting and CSRF protection, set a strong `SECRET_KEY`, and complete Google's OAuth verification.
+
+## The safety tools
+
+| Tool | What happens to your data |
+|---|---|
+| **Chat check** | The chat is matched against scam scripts and discarded. It is not saved to history. |
+| **UPI check** | The QR code is decoded and the image read in memory, then discarded. |
+| **On a call** | Speech-to-text runs in your browser (Chrome uses Google's service). Matching happens on the page; the server never receives audio or transcripts. |
+| **I already paid** | The receipt is read in memory and discarded. Checklist ticks, the payment time and your family contact are kept only in your browser's local storage. |
+
+The full user-facing policy is at `/privacy`, and the terms are at `/terms`.
